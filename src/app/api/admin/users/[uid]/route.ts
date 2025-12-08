@@ -1,3 +1,4 @@
+// Next.js 16 compatible route handlers
 import { NextRequest, NextResponse } from "next/server";
 import { checkAdminSecretKey } from "@/lib/adminAuth";
 import { getFirebaseAdmin } from "@/lib/firebaseAdmin";
