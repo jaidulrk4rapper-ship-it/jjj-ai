@@ -1,10 +1,24 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
+import { getUserIdFromRequest } from "@/lib/auth";
+import { getUserById } from "@/lib/users";
+import { incrementUsage } from "@/lib/db";
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
+    // Check if user is logged in (has email)
+    const userId = await getUserIdFromRequest(req);
+    const user = await getUserById(userId);
+    
+    if (!user || !user.email) {
+      return NextResponse.json(
+        { error: "Please sign in with your email to use Text-to-Image." },
+        { status: 401 }
+      );
+    }
+
     if (!OPENAI_API_KEY) {
       console.error("Missing OPENAI_API_KEY env");
       return NextResponse.json(
@@ -89,6 +103,16 @@ export async function POST(req: Request) {
 
     const imageBuffer = await imageResponse.arrayBuffer();
     const imageBase64 = Buffer.from(imageBuffer).toString("base64");
+
+    // Increment usage after successful generation
+    try {
+      await incrementUsage(userId, "image", {
+        images: 1,
+      });
+    } catch (error) {
+      // Log but don't fail the request if usage tracking fails
+      console.error("Failed to increment usage:", error);
+    }
 
     return NextResponse.json({ imageBase64 });
   } catch (err: any) {

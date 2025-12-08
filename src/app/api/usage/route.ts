@@ -1,26 +1,14 @@
-import { NextResponse } from "next/server";
-import { getUserFromRequestDev } from "@/lib/auth";
-import { getUserDoc } from "@/lib/db";
+import { NextRequest, NextResponse } from "next/server";
+import { getUserIdFromRequest } from "@/lib/auth";
+import { getUserById } from "@/lib/users";
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
-    const user = await getUserFromRequestDev(req);
+    const userId = await getUserIdFromRequest(req);
     
-    // If no user is authenticated, return default free plan data
-    if (!user) {
-      return NextResponse.json({
-        plan: "free",
-        usage: {
-          chat: { used: 0, limit: 30, period: "day" },
-          tts: { used: 0, limit: 5, period: "day" },
-          image: { used: 0, limit: 5, period: "day" },
-        },
-      });
-    }
-
     let userDoc;
     try {
-      userDoc = await getUserDoc(user.uid);
+      userDoc = await getUserById(userId);
     } catch (error: any) {
       // If Firebase isn't configured, return default usage data
       console.error("Database error in usage API:", error);
@@ -49,6 +37,7 @@ export async function GET(req: Request) {
     }
     
     if (!userDoc) {
+      // Return default free plan data if user not found
       return NextResponse.json({
         plan: "free",
         usage: {

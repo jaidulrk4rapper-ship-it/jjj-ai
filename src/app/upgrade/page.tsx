@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Crown, Check } from "lucide-react";
+import { Crown, Check, Sparkles, Zap, Infinity, Shield, Headphones } from "lucide-react";
+import { useJjjUser } from "@/providers/UserProvider";
+import LoginPrompt from "@/components/LoginPrompt";
+import { useRouter } from "next/navigation";
 
 declare global {
   interface Window {
@@ -10,6 +13,13 @@ declare global {
 }
 
 export default function UpgradePage() {
+  const { user, loading: userLoading } = useJjjUser();
+  
+  // Show login prompt if user is not logged in
+  if (!userLoading && (!user || !user.email)) {
+    return <LoginPrompt title="Sign in to upgrade" message="Please sign in with your email to upgrade to JJJ AI Pro." />;
+  }
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [razorpayLoaded, setRazorpayLoaded] = useState(false);
@@ -90,92 +100,156 @@ export default function UpgradePage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-12 px-6">
-
+    <div className="max-w-5xl mx-auto py-12 px-6">
+      {/* Header */}
       <div className="text-center mb-12">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 mb-4">
-          <Crown className="h-8 w-8 text-white" />
+        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-amber-500 to-yellow-500 mb-6 shadow-lg shadow-amber-500/20">
+          <Crown className="h-10 w-10 text-white" />
         </div>
-        <h1 className="text-4xl font-bold text-white mb-2">Upgrade to JJJ AI Pro</h1>
-        <p className="text-gray-400 text-lg">
-          Unlock unlimited access to all AI features
+        <h1 className="text-5xl font-bold text-white mb-3 bg-gradient-to-r from-amber-400 to-yellow-400 bg-clip-text text-transparent">
+          Upgrade to JJJ AI Pro
+        </h1>
+        <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+          Unlock unlimited access to all AI features with higher limits and priority support
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-8 mb-8">
-        {/* Free Plan */}
-        <div className="rounded-xl border border-[#1A1A1A] bg-[#0A0A0A] p-6">
-          <h2 className="text-xl font-semibold text-white mb-2">Free Plan</h2>
-          <div className="text-3xl font-bold text-white mb-4">₹0</div>
-          <ul className="space-y-3 mb-6">
-            <li className="flex items-start gap-2 text-sm text-gray-400">
-              <Check className="h-4 w-4 text-gray-500 mt-0.5 flex-shrink-0" />
-              <span>30 AI Chat messages per day</span>
-            </li>
-            <li className="flex items-start gap-2 text-sm text-gray-400">
-              <Check className="h-4 w-4 text-gray-500 mt-0.5 flex-shrink-0" />
-              <span>5 Text-to-Speech clips per day (max 30s)</span>
-            </li>
-            <li className="flex items-start gap-2 text-sm text-gray-400">
-              <Check className="h-4 w-4 text-gray-500 mt-0.5 flex-shrink-0" />
-              <span>5 Images per day</span>
-            </li>
-            <li className="flex items-start gap-2 text-sm text-gray-400">
-              <Check className="h-4 w-4 text-gray-500 mt-0.5 flex-shrink-0" />
-              <span>Max 2,000 characters per message</span>
-            </li>
-          </ul>
-        </div>
-
-        {/* Pro Plan */}
-        <div className="rounded-xl border-2 border-sky-500 bg-gradient-to-br from-sky-500/10 to-blue-600/10 p-6 relative">
-          <div className="absolute top-4 right-4 bg-sky-500 text-white text-xs font-semibold px-2 py-1 rounded">
-            RECOMMENDED
+      {/* Key Features */}
+      <div className="grid md:grid-cols-3 gap-4 mb-12">
+        <div className="flex items-start gap-3 p-4 rounded-lg bg-[#111111] border border-[#1A1A1A]">
+          <Zap className="h-5 w-5 text-amber-400 flex-shrink-0 mt-0.5" />
+          <div>
+            <h3 className="text-sm font-semibold text-white mb-1">Faster Processing</h3>
+            <p className="text-xs text-gray-400">Priority queue for all requests</p>
           </div>
-          <h2 className="text-xl font-semibold text-white mb-2 flex items-center gap-2">
-            Pro Plan
-            <Crown className="h-5 w-5 text-sky-400" />
-          </h2>
-          <div className="text-3xl font-bold text-white mb-1">₹399</div>
-          <div className="text-sm text-gray-400 mb-4">per month</div>
-          <ul className="space-y-3 mb-6">
-            <li className="flex items-start gap-2 text-sm text-white">
-              <Check className="h-4 w-4 text-sky-400 mt-0.5 flex-shrink-0" />
-              <span>1,000+ AI Chat messages per month</span>
-            </li>
-            <li className="flex items-start gap-2 text-sm text-white">
-              <Check className="h-4 w-4 text-sky-400 mt-0.5 flex-shrink-0" />
-              <span>300 minutes of Text-to-Speech per month</span>
-            </li>
-            <li className="flex items-start gap-2 text-sm text-white">
-              <Check className="h-4 w-4 text-sky-400 mt-0.5 flex-shrink-0" />
-              <span>300 Images per month</span>
-            </li>
-            <li className="flex items-start gap-2 text-sm text-white">
-              <Check className="h-4 w-4 text-sky-400 mt-0.5 flex-shrink-0" />
-              <span>Max 6,000 characters per message</span>
-            </li>
-            <li className="flex items-start gap-2 text-sm text-white">
-              <Check className="h-4 w-4 text-sky-400 mt-0.5 flex-shrink-0" />
-              <span>Priority support & quota</span>
-            </li>
-          </ul>
-          <button
-            onClick={handleUpgrade}
-            disabled={loading}
-            className="w-full bg-sky-600 hover:bg-sky-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-colors"
-          >
-            {loading ? "Processing..." : "Upgrade to Pro"}
-          </button>
-          {error && (
-            <p className="mt-3 text-sm text-red-400 text-center">{error}</p>
-          )}
+        </div>
+        <div className="flex items-start gap-3 p-4 rounded-lg bg-[#111111] border border-[#1A1A1A]">
+          <Infinity className="h-5 w-5 text-amber-400 flex-shrink-0 mt-0.5" />
+          <div>
+            <h3 className="text-sm font-semibold text-white mb-1">Higher Limits</h3>
+            <p className="text-xs text-gray-400">10x more usage than free plan</p>
+          </div>
+        </div>
+        <div className="flex items-start gap-3 p-4 rounded-lg bg-[#111111] border border-[#1A1A1A]">
+          <Headphones className="h-5 w-5 text-amber-400 flex-shrink-0 mt-0.5" />
+          <div>
+            <h3 className="text-sm font-semibold text-white mb-1">Priority Support</h3>
+            <p className="text-xs text-gray-400">Get help when you need it</p>
+          </div>
         </div>
       </div>
 
-      <div className="text-center text-sm text-gray-500">
-        <p>All payments are secure and processed by Razorpay</p>
-        <p className="mt-1">Cancel anytime. No questions asked.</p>
+      {/* Pricing Cards */}
+      <div className="grid md:grid-cols-2 gap-8 mb-12">
+        {/* Free Plan */}
+        <div className="rounded-2xl border border-[#1A1A1A] bg-[#0A0A0A] p-8 relative">
+          <h2 className="text-2xl font-semibold text-white mb-2">Free</h2>
+          <div className="mb-6">
+            <span className="text-4xl font-bold text-white">₹0</span>
+            <span className="text-gray-400 ml-2">forever</span>
+          </div>
+          <ul className="space-y-4 mb-8">
+            <li className="flex items-start gap-3 text-sm">
+              <Check className="h-5 w-5 text-gray-500 mt-0.5 flex-shrink-0" />
+              <span className="text-gray-400">30 AI Chat messages per day</span>
+            </li>
+            <li className="flex items-start gap-3 text-sm">
+              <Check className="h-5 w-5 text-gray-500 mt-0.5 flex-shrink-0" />
+              <span className="text-gray-400">5 Text-to-Speech clips per day</span>
+            </li>
+            <li className="flex items-start gap-3 text-sm">
+              <Check className="h-5 w-5 text-gray-500 mt-0.5 flex-shrink-0" />
+              <span className="text-gray-400">5 Images per day</span>
+            </li>
+            <li className="flex items-start gap-3 text-sm">
+              <Check className="h-5 w-5 text-gray-500 mt-0.5 flex-shrink-0" />
+              <span className="text-gray-400">Max 2,000 characters per message</span>
+            </li>
+          </ul>
+          <button
+            disabled
+            className="w-full bg-[#1A1A1A] text-gray-500 font-semibold py-3 px-4 rounded-lg cursor-not-allowed"
+          >
+            Current Plan
+          </button>
+        </div>
+
+        {/* Pro Plan */}
+        <div className="rounded-2xl border-2 border-amber-500 bg-gradient-to-br from-amber-500/10 to-yellow-500/10 p-8 relative overflow-hidden">
+          {/* Glow effect */}
+          <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-yellow-500/5 blur-3xl" />
+          
+          <div className="absolute top-6 right-6 bg-amber-500 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg">
+            RECOMMENDED
+          </div>
+          
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-2">
+              <h2 className="text-2xl font-semibold text-white">Pro</h2>
+              <Crown className="h-5 w-5 text-amber-400" />
+            </div>
+            <div className="mb-6">
+              <span className="text-4xl font-bold text-white">₹399</span>
+              <span className="text-gray-400 ml-2">/month</span>
+            </div>
+            <ul className="space-y-4 mb-8">
+              <li className="flex items-start gap-3 text-sm">
+                <Check className="h-5 w-5 text-amber-400 mt-0.5 flex-shrink-0" />
+                <span className="text-white">1,000+ AI Chat messages per month</span>
+              </li>
+              <li className="flex items-start gap-3 text-sm">
+                <Check className="h-5 w-5 text-amber-400 mt-0.5 flex-shrink-0" />
+                <span className="text-white">300 minutes of Text-to-Speech per month</span>
+              </li>
+              <li className="flex items-start gap-3 text-sm">
+                <Check className="h-5 w-5 text-amber-400 mt-0.5 flex-shrink-0" />
+                <span className="text-white">300 Images per month</span>
+              </li>
+              <li className="flex items-start gap-3 text-sm">
+                <Check className="h-5 w-5 text-amber-400 mt-0.5 flex-shrink-0" />
+                <span className="text-white">Max 6,000 characters per message</span>
+              </li>
+              <li className="flex items-start gap-3 text-sm">
+                <Check className="h-5 w-5 text-amber-400 mt-0.5 flex-shrink-0" />
+                <span className="text-white">Priority support & faster processing</span>
+              </li>
+            </ul>
+            <button
+              onClick={handleUpgrade}
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3.5 px-4 rounded-lg transition-all shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Processing...
+                </span>
+              ) : (
+                "Upgrade to Pro"
+              )}
+            </button>
+            {error && (
+              <p className="mt-3 text-sm text-red-400 text-center">{error}</p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Trust Badges */}
+      <div className="text-center space-y-4">
+        <div className="flex items-center justify-center gap-6 text-sm text-gray-400">
+          <div className="flex items-center gap-2">
+            <Shield className="h-4 w-4" />
+            <span>Secure payments</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4" />
+            <span>Cancel anytime</span>
+          </div>
+        </div>
+        <p className="text-xs text-gray-500">
+          All payments are processed securely by Razorpay. No questions asked refund policy.
+        </p>
       </div>
     </div>
   );

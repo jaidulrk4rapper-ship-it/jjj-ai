@@ -1,9 +1,22 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { getUserIdFromRequest } from "@/lib/auth";
+import { getUserById } from "@/lib/users";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
+    // Check if user is logged in (has email)
+    const userId = await getUserIdFromRequest(req);
+    const user = await getUserById(userId);
+    
+    if (!user || !user.email) {
+      return NextResponse.json(
+        { error: "Please sign in with your email to use Speech-to-Text." },
+        { status: 401 }
+      );
+    }
+
     if (!GEMINI_API_KEY) {
       return NextResponse.json(
         { error: "GEMINI_API_KEY missing" },

@@ -1,83 +1,192 @@
-import UpgradeToProButton from "@/components/UpgradeToProButton";
+// src/app/account/page.tsx
+// Account Settings Page
+
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useJjjUser } from "@/providers/UserProvider";
+import { LogOut, Trash2, Crown, Mail, User } from "lucide-react";
+import LoginPrompt from "@/components/LoginPrompt";
 
 export default function AccountPage() {
-  // TODO: real user data from auth
-  const userId = "demo-sera";
-  const email = "sera@dock.ai";
-  const plan = "free" as "free" | "pro";
+  const router = useRouter();
+  const { user, loading: userLoading, logout, deleteAccount } = useJjjUser();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
+
+  // Show login prompt if user is not logged in
+  if (!userLoading && (!user || !user.email)) {
+    return <LoginPrompt title="Sign in to view account" message="Please sign in with your email to view your account settings." />;
+  }
+
+  const handleLogout = async () => {
+    setLogoutLoading(true);
+    try {
+      await logout();
+    } catch (error: any) {
+      console.error("Logout error:", error);
+      alert("Failed to logout. Please try again.");
+    } finally {
+      setLogoutLoading(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+      return;
+    }
+    
+    setDeleteLoading(true);
+    try {
+      await deleteAccount();
+    } catch (error: any) {
+      console.error("Delete account error:", error);
+      alert(error?.message || "Failed to delete account. Please try again.");
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
 
   return (
-    <div className="h-[calc(100vh-80px)] flex flex-col">
-      <div className="flex items-center justify-between">
+    <div className="min-h-[calc(100vh-80px)] p-6">
+      <div className="max-w-2xl mx-auto space-y-6">
+        {/* Header */}
         <div>
-          <h1 className="text-2xl font-semibold text-white">Account</h1>
-          <p className="text-sm text-gray-400">
-            Manage your JJJ AI plan and billing.
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
+            Account Settings
+          </h1>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Manage your account information and preferences
           </p>
         </div>
-        <div className="rounded-full border border-[#1A1A1A] bg-black/80 px-3 py-1 text-xs text-gray-300">
-          Plan:{" "}
-          <span
-            className={`ml-1 rounded-full px-2 py-0.5 text-[10px] ${
-              plan === "pro"
-                ? "bg-emerald-500 text-black"
-                : "bg-gray-700 text-gray-100"
-            }`}
-          >
-            {plan === "pro" ? "JJJ AI Pro" : "JJJ AI Free"}
-          </span>
-        </div>
-      </div>
 
-      <div className="mt-6 grid gap-6 md:grid-cols-2">
-        {/* Free card */}
-        <div className="rounded-2xl border border-[#1A1A1A] bg-[#050505] p-5 text-sm text-gray-200">
-          <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-            Free
-          </p>
-          <h2 className="mt-1 text-xl font-semibold text-white">
-            JJJ AI Free
+        {/* Account Information */}
+        <div className="bg-white dark:bg-[#111111] border border-gray-200 dark:border-[#1A1A1A] rounded-xl p-6 space-y-4">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <User className="h-5 w-5" />
+            Account Information
           </h2>
-          <p className="mt-2 text-xs text-gray-400">
-            Perfect to try JJJ AI tools:
-          </p>
-          <ul className="mt-3 list-disc space-y-1 pl-4 text-xs text-gray-300">
-            <li>30 AI Chat messages / day</li>
-            <li>5 AI Voice clips / day</li>
-            <li>5 AI Images / day (future)</li>
-          </ul>
-          <p className="mt-4 text-xl font-semibold text-white">₹0</p>
+          
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Email Address
+              </label>
+              <div className="flex items-center gap-2">
+                <Mail className="h-4 w-4 text-gray-400" />
+                <span className="text-sm text-gray-900 dark:text-white">{user?.email}</span>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Plan
+              </label>
+              <div className="flex items-center gap-2">
+                {user?.plan === "pro" ? (
+                  <>
+                    <Crown className="h-4 w-4 text-sky-500" />
+                    <span className="text-sm font-medium text-sky-600 dark:text-sky-400">JJJ AI Pro</span>
+                  </>
+                ) : (
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Free Plan</span>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Coins Balance
+              </label>
+              <span className="text-sm text-gray-900 dark:text-white">{user?.coins || 0} coins</span>
+            </div>
+          </div>
         </div>
 
-        {/* Pro card */}
-        <div className="rounded-2xl border border-emerald-500/60 bg-[#020617] p-5 text-sm text-gray-200 shadow-[0_0_40px_rgba(16,185,129,0.25)]">
-          <p className="text-xs font-semibold uppercase tracking-wide text-emerald-400">
-            Recommended
-          </p>
-          <h2 className="mt-1 text-xl font-semibold text-white">
-            JJJ AI Pro
+        {/* Actions */}
+        <div className="bg-white dark:bg-[#111111] border border-gray-200 dark:border-[#1A1A1A] rounded-xl p-6 space-y-4">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+            Actions
           </h2>
-          <p className="mt-2 text-xs text-gray-400">
-            For serious creators, business owners, and power users:
-          </p>
-          <ul className="mt-3 list-disc space-y-1 pl-4 text-xs text-gray-300">
-            <li>1,000+ AI Chat messages / month</li>
-            <li>Up to ~300 min AI Voice / month</li>
-            <li>High limits on images & tools</li>
-            <li>Priority access to new JJJ AI features</li>
-          </ul>
+          
+          <div className="space-y-3">
+            <button
+              onClick={handleLogout}
+              disabled={logoutLoading}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-gray-300 dark:border-[#1A1A1A] bg-white dark:bg-[#050505] text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#111111] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>{logoutLoading ? "Logging out..." : "Log out"}</span>
+            </button>
 
-          <p className="mt-4 text-2xl font-semibold text-white">
-            ₹399
-            <span className="text-xs text-gray-400"> / month</span>
-          </p>
-
-          <div className="mt-4">
-            <UpgradeToProButton userId={userId} userEmail={email} />
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-red-300 dark:border-red-900/50 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+            >
+              <Trash2 className="h-4 w-4" />
+              <span>Delete Account</span>
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Delete Account Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-white dark:bg-[#111111] rounded-xl border border-gray-200 dark:border-[#1A1A1A] p-6 w-full max-w-md mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Delete Account
+              </h2>
+              <button
+                onClick={() => {
+                  setShowDeleteConfirm(false);
+                  setDeleteLoading(false);
+                }}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                disabled={deleteLoading}
+              >
+                ×
+              </button>
+            </div>
+            <div className="space-y-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Are you sure you want to delete your account? This action cannot be undone. All your data, including:
+              </p>
+              <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-1 ml-2">
+                <li>Your account information</li>
+                <li>Usage history</li>
+                <li>Generated content</li>
+                <li>Subscription data</li>
+              </ul>
+              <p className="text-sm font-semibold text-red-600 dark:text-red-400">
+                All of this will be permanently deleted.
+              </p>
+              <div className="flex gap-3 pt-2">
+                <button
+                  onClick={() => {
+                    setShowDeleteConfirm(false);
+                    setDeleteLoading(false);
+                  }}
+                  disabled={deleteLoading}
+                  className="flex-1 rounded-md border border-gray-300 dark:border-[#1A1A1A] bg-white dark:bg-[#050505] text-gray-700 dark:text-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50 dark:hover:bg-[#111111] transition-colors disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteAccount}
+                  disabled={deleteLoading}
+                  className="flex-1 rounded-md bg-red-600 hover:bg-red-700 text-white px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {deleteLoading ? "Deleting..." : "Delete Account"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-

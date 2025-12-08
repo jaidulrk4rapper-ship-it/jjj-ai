@@ -1,5 +1,8 @@
 "use client";
 
+import { useJjjUser } from "@/providers/UserProvider";
+import LoginPrompt from "@/components/LoginPrompt";
+
 import { useState, useRef, useEffect } from "react";
 
 const ALLOWED_VOICES = ["alloy", "echo", "fable", "onyx", "nova", "shimmer"] as const;
@@ -70,6 +73,13 @@ interface TTSUsageInfo {
 }
 
 export default function TextToSpeechPage() {
+  const { user, loading: userLoading } = useJjjUser();
+  
+  // Show login prompt if user is not logged in
+  if (!userLoading && (!user || !user.email)) {
+    return <LoginPrompt title="Sign in to use Text-to-Speech" message="Please sign in with your email to generate audio from text." />;
+  }
+
   const [text, setText] = useState("");
   const [voice, setVoice] = useState<AllowedVoice>("alloy");
   const [preset, setPreset] = useState<PresetId>("custom");

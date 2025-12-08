@@ -1,7 +1,8 @@
 import OpenAI from "openai";
-import { NextResponse } from "next/server";
-import { getUserFromRequest } from "@/lib/auth";
-import { ensureUserDoc, incrementUsage, JJJAIUserDoc } from "@/lib/db";
+import { NextRequest, NextResponse } from "next/server";
+import { getUserIdFromRequest } from "@/lib/auth";
+import { getUserById } from "@/lib/users";
+import { incrementUsage } from "@/lib/db";
 import {
   TTS_FREE_MAX_CHARS,
   TTS_PRO_MAX_CHARS,
@@ -17,24 +18,20 @@ const client = new OpenAI({
 const ALLOWED_VOICES = ["alloy", "echo", "fable", "onyx", "nova", "shimmer"] as const;
 type AllowedVoice = (typeof ALLOWED_VOICES)[number];
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    // Auth + user doc
-    const user = await getUserFromRequest(req);
-
-    // In production, require auth. In dev, allow without auth (like usageGuard)
-    if (!user && process.env.NODE_ENV === "production") {
+    // Check if user is logged in (has email)
+    const userId = await getUserIdFromRequest(req);
+    const user = await getUserById(userId);
+    
+    if (!user || !user.email) {
       return NextResponse.json(
-        { error: "Not authenticated" },
+        { error: "Please sign in with your email to use Text-to-Speech." },
         { status: 401 }
       );
     }
 
-    // Dev mode: use dummy user if not authenticated
-    const uid = user?.uid || "dev-user";
-    const email = user?.email;
-
-    const userDoc = await ensureUserDoc(uid, email);
+    const userDoc = user;
 
     // Determine plan + limits
     const plan = userDoc.plan ?? "free";
@@ -105,7 +102,7 @@ export async function POST(req: Request) {
       Math.round(trimmed.length / TTS_CHARS_PER_SECOND)
     );
 
-    await incrementUsage(uid, "tts", {
+    await incrementUsage(userId, "tts", {
       clips: 1,
       seconds: approxSeconds,
     });

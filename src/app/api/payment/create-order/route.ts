@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import RazorpayLib from "razorpay";
-import { getUserFromRequestDev } from "@/lib/auth";
-import { getUserDoc } from "@/lib/db";
+import { getUserIdFromRequest } from "@/lib/auth";
+import { getUserById } from "@/lib/users";
 
 function getRazorpayInstance() {
   const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
@@ -17,20 +17,21 @@ function getRazorpayInstance() {
   });
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const user = await getUserFromRequestDev(req);
+    // Check if user is logged in (has email)
+    const userId = await getUserIdFromRequest(req);
+    const user = await getUserById(userId);
     
-    if (!user) {
+    if (!user || !user.email) {
       return NextResponse.json(
-        { error: "Please sign in to upgrade." },
+        { error: "Please sign in with your email to upgrade." },
         { status: 401 }
       );
     }
 
     // Check if user is already Pro
-    const userDoc = await getUserDoc(user.uid);
-    if (userDoc?.plan === "pro") {
+    if (user.plan === "pro") {
       return NextResponse.json(
         { error: "You are already on JJJ AI Pro plan." },
         { status: 400 }
@@ -39,14 +40,14 @@ export async function POST(req: Request) {
 
     const amount = 39900; // ₹399 in paise
     const currency = "INR";
-    const receipt = `jjjai_pro_${user.uid}_${Date.now()}`;
+    const receipt = `jjjai_pro_${userId}_${Date.now()}`;
 
     const options = {
       amount,
       currency,
       receipt,
       notes: {
-        userId: user.uid,
+        userId: userId,
         email: user.email || "",
         plan: "pro",
         product: "JJJ AI Pro",

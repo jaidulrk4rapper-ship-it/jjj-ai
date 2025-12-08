@@ -41,9 +41,11 @@ export async function GET(req: Request) {
 
     const users: AdminUser[] = snapshot.docs.map((doc) => {
       const data = doc.data();
+      // Show "Guest user" if no email and isGuest is true (or email is missing)
+      const email = data.email || (data.isGuest ? "Guest user" : undefined);
       return {
         uid: doc.id,
-        email: data.email || undefined,
+        email: email,
         plan: data.plan || "free",
         coins: data.coins || 0,
         createdAt: data.createdAt?.toDate?.()?.toISOString() || undefined,

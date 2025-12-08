@@ -1,6 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { checkUsage } from "@/lib/usageGuard";
 import { incrementUsage } from "@/lib/db";
+import { getUserById } from "@/lib/users";
+import { getUserIdFromRequest } from "@/lib/auth";
 import OpenAI from "openai";
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
@@ -9,7 +11,7 @@ type ChatRequestBody = {
   message: string;
 };
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   if (!OPENAI_API_KEY) {
     return NextResponse.json(
       { error: "OPENAI_API_KEY is not set" },
@@ -18,6 +20,17 @@ export async function POST(req: Request) {
   }
 
   try {
+    // Check if user is logged in (has email)
+    const userId = await getUserIdFromRequest(req);
+    const user = await getUserById(userId);
+    
+    if (!user || !user.email) {
+      return NextResponse.json(
+        { error: "Please sign in with your email to use AI Chat." },
+        { status: 401 }
+      );
+    }
+
     const body = (await req.json()) as ChatRequestBody;
     const { message } = body;
 
@@ -68,7 +81,7 @@ export async function POST(req: Request) {
 
     // Increment usage after successful API call
     try {
-      await incrementUsage(usageCheck.userId, "chat", {
+      await incrementUsage(userId, "chat", {
         messages: 1,
       });
     } catch (error) {

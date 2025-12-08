@@ -1,10 +1,19 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { useJjjUser } from "@/providers/UserProvider";
+import LoginPrompt from "@/components/LoginPrompt";
 
 type Status = "idle" | "uploading" | "transcribing";
 
 export default function SpeechToTextPage() {
+  const { user, loading: userLoading } = useJjjUser();
+  
+  // Show login prompt if user is not logged in
+  if (!userLoading && (!user || !user.email)) {
+    return <LoginPrompt title="Sign in to use Speech-to-Text" message="Please sign in with your email to transcribe audio files." />;
+  }
+
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   const [transcript, setTranscript] = useState("");

@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import RazorpayLib from "razorpay";
-import { getUserFromRequest } from "@/lib/auth";
+import { getUserIdFromRequest } from "@/lib/auth";
+import { getUserById } from "@/lib/users";
 
 const PRICE_INR =
   Number(process.env.JJJAI_PRO_MONTHLY_PRICE_INR || "399");
@@ -19,13 +20,15 @@ function getRazorpayInstance() {
   });
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const user = await getUserFromRequest(req);
-
-    if (!user) {
+    // Check if user is logged in (has email)
+    const userId = await getUserIdFromRequest(req);
+    const user = await getUserById(userId);
+    
+    if (!user || !user.email) {
       return NextResponse.json(
-        { error: "Login required to upgrade to Pro." },
+        { error: "Please sign in with your email to upgrade to Pro." },
         { status: 401 }
       );
     }
@@ -39,9 +42,9 @@ export async function POST(req: Request) {
     const options = {
       amount: amountInPaise,
       currency: "INR",
-      receipt: `jjjai_pro_${user.uid}_${Date.now()}`,
+      receipt: `jjjai_pro_${userId}_${Date.now()}`,
       notes: {
-        userId: user.uid,
+        userId: userId,
         email: user.email || "",
         plan: "pro-monthly",
         name: "JJJ AI Pro",
@@ -58,7 +61,7 @@ export async function POST(req: Request) {
       amount: order.amount,
       currency: order.currency,
       user: {
-        id: user.uid,
+        id: userId,
         email: user.email,
       },
     });

@@ -3,6 +3,9 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useSettings } from "@/components/settings-provider";
+import { useJjjUser } from "@/providers/UserProvider";
+import { apiFetch } from "@/lib/apiClient";
+import LoginPrompt from "@/components/LoginPrompt";
 
 type Message = {
   id: string;
@@ -20,6 +23,12 @@ export default function AiChatPage() {
     defaultLang,
     theme,
   } = useSettings();
+  const { user, loading: userLoading } = useJjjUser();
+
+  // Show login prompt if user is not logged in
+  if (!userLoading && (!user || !user.email)) {
+    return <LoginPrompt title="Sign in to use AI Chat" message="Please sign in with your email to start chatting with JJJ AI." />;
+  }
 
   const fontSizeClass =
     fontSize === "small"
@@ -113,15 +122,12 @@ export default function AiChatPage() {
     setMessages((prev) => [...prev, aiMessage]);
 
     try {
-      const res = await fetch("/api/chat", {
+      const res = await apiFetch("/api/chat", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({
           message: trimmed,
         }),
-      });
+      }, user?.userId);
 
       if (!res.ok) {
         // Try to get error message

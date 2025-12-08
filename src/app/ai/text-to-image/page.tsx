@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useJjjUser } from "@/providers/UserProvider";
+import LoginPrompt from "@/components/LoginPrompt";
 
 type GeneratedImage = {
   id: string;
@@ -20,6 +22,13 @@ const STYLE_PRESETS = [
 ];
 
 export default function TextToImagePage() {
+  const { user, loading: userLoading } = useJjjUser();
+  
+  // Show login prompt if user is not logged in
+  if (!userLoading && (!user || !user.email)) {
+    return <LoginPrompt title="Sign in to use Text-to-Image" message="Please sign in with your email to generate images from text." />;
+  }
+
   const [prompt, setPrompt] = useState("");
   const [size, setSize] = useState<"square" | "wide" | "tall">("square");
   const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
