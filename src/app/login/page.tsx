@@ -146,27 +146,65 @@ function LoginForm() {
   };
 
   const tryOAuthFlow = () => {
-    // For now, use a simple approach: redirect to our API which will handle OAuth
-    // Or use Chrome's profile info if available
-    if (typeof window !== "undefined" && (window as any).chrome?.identity) {
-      (window as any).chrome.identity.getProfileUserInfo(async (info: any) => {
-        if (info?.email) {
-          try {
-            await signInWithEmail(info.email, undefined, true);
-            router.push("/");
-          } catch (err: any) {
-            setError(err?.message || "Failed to sign in");
-            setIsGoogleLoading(false);
-          }
-        } else {
-          setError("Please sign in to Chrome with your Google account first");
-          setIsGoogleLoading(false);
-        }
-      });
-    } else {
-      setError("Google sign-in requires Chrome browser. Please use email/password to sign in.");
+    // Use popup-based OAuth flow that works in all browsers
+    // Redirect to our API endpoint which will handle Google OAuth
+    const width = 500;
+    const height = 600;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+
+    // Open popup with Google OAuth
+    const authUrl = `/api/auth/google?redirect=${encodeURIComponent(window.location.href)}`;
+    const popup = window.open(
+      authUrl,
+      "Google Sign In",
+      `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,scrollbars=yes,resizable=yes`
+    );
+
+    if (!popup) {
+      setError("Popup blocked. Please allow popups for this site and try again.");
       setIsGoogleLoading(false);
+      return;
     }
+
+    // Poll for popup to redirect (when OAuth completes, it redirects to home)
+    const checkPopup = setInterval(() => {
+      try {
+        if (popup.closed) {
+          clearInterval(checkPopup);
+          setIsGoogleLoading(false);
+          // Check if we're now logged in by checking localStorage or reloading
+          const userId = localStorage.getItem("jjj_user_id");
+          if (userId) {
+            // User successfully logged in, reload to update state
+            window.location.reload();
+          }
+          return;
+        }
+
+        // Try to access popup location (will throw if cross-origin, which is expected)
+        if (popup.location.href.includes(window.location.origin)) {
+          // Popup redirected back to our site, OAuth likely completed
+          popup.close();
+          clearInterval(checkPopup);
+          setIsGoogleLoading(false);
+          // Reload to get updated auth state
+          window.location.reload();
+        }
+      } catch (e) {
+        // Cross-origin error is expected during OAuth flow, ignore it
+      }
+    }, 500);
+
+    // Timeout after 5 minutes
+    setTimeout(() => {
+      if (!popup.closed) {
+        popup.close();
+        clearInterval(checkPopup);
+        setIsGoogleLoading(false);
+        setError("Sign-in timed out. Please try again.");
+      }
+    }, 5 * 60 * 1000);
   };
 
   if (userLoading || isGoogleLoading) {

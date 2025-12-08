@@ -22,6 +22,7 @@ export interface JjjSettings {
   fontSize: FontSize;
   reducedMotion: boolean;
   defaultLanguage: DefaultLanguage;
+  sidebarCollapsed: boolean;
 }
 
 const DEFAULT_SETTINGS: JjjSettings = {
@@ -31,6 +32,7 @@ const DEFAULT_SETTINGS: JjjSettings = {
   fontSize: "medium",
   reducedMotion: false,
   defaultLanguage: "auto",
+  sidebarCollapsed: false,
 };
 
 type SettingsContextValue = {
@@ -67,14 +69,14 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       console.warn("Failed to save settings", e);
     }
 
-    // Apply theme to <html> for Tailwind / CSS
+    // Apply theme to <html> for Tailwind / CSS (always dark)
     if (typeof document !== "undefined") {
       const root = document.documentElement;
-      root.dataset.theme = settings.theme; // [data-theme="dark"] etc
+      root.dataset.theme = "dark"; // Always dark theme
       
       // Also add/remove class for better compatibility
       root.classList.remove("dark", "light");
-      root.classList.add(settings.theme);
+      root.classList.add("dark");
 
       root.style.setProperty(
         "--jjj-font-size",

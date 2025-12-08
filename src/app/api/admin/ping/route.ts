@@ -1,9 +1,16 @@
 // src/app/api/admin/ping/route.ts
 
 import { NextResponse } from "next/server";
+import { checkAdminSecretKey } from "@/lib/adminAuth";
 import { getFirebaseAdmin } from "@/lib/firebaseAdmin";
 
-export async function GET() {
+export async function GET(req: Request) {
+  if (!checkAdminSecretKey(req)) {
+    return NextResponse.json(
+      { ok: false, error: "Forbidden" },
+      { status: 403 }
+    );
+  }
   try {
     const { db } = getFirebaseAdmin();
 

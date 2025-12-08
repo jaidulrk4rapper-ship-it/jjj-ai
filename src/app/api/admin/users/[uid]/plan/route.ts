@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { checkAdminSecretKey } from "@/lib/adminAuth";
 import { getDb } from "@/lib/firebaseAdmin";
 import { FieldValue } from "firebase-admin/firestore";
 
@@ -6,6 +7,13 @@ export async function POST(
   req: NextRequest,
   context: { params: Promise<{ uid: string }> }
 ) {
+  if (!checkAdminSecretKey(req)) {
+    return NextResponse.json(
+      { error: "Forbidden" },
+      { status: 403 }
+    );
+  }
+
   const { params } = context;
   const { uid } = await params;
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSettings } from "@/contexts/SettingsContext";
 
@@ -9,22 +9,10 @@ export default function SettingsDock() {
 
   const { settings, setSettings, resetSettings } = useSettings();
 
-  const handleThemeChange = (theme: "dark" | "light") => {
-    setSettings((prev) => {
-      const updated = { ...prev, theme };
-      console.log("Theme changed to:", theme, updated);
-      return updated;
-    });
-  };
-
   const handleReplyLengthChange = (
     replyLength: "short" | "normal" | "detailed"
   ) => {
-    setSettings((prev) => {
-      const updated = { ...prev, replyLength };
-      console.log("Reply length changed to:", replyLength, updated);
-      return updated;
-    });
+    setSettings((prev) => ({ ...prev, replyLength }));
   };
 
   const toggleTimestamps = () => {
@@ -48,11 +36,7 @@ export default function SettingsDock() {
   const handleDefaultLanguageChange = (
     lang: "auto" | "en" | "hi" | "bn"
   ) => {
-    setSettings((prev) => {
-      const updated = { ...prev, defaultLanguage: lang };
-      console.log("Default language changed to:", lang, updated);
-      return updated;
-    });
+    setSettings((prev) => ({ ...prev, defaultLanguage: lang }));
   };
 
   return (
@@ -94,45 +78,6 @@ export default function SettingsDock() {
                 ✕
               </button>
             </div>
-
-            {/* Theme toggle: Dark / Light */}
-            <section className="mb-3 space-y-1">
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-                Theme
-              </p>
-              <div className="flex gap-1 rounded-full border border-[#1A1A1A] bg-[#050505] p-1 text-xs">
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleThemeChange("dark");
-                  }}
-                  className={`flex-1 px-3 py-1.5 rounded-full transition-colors cursor-pointer ${
-                    settings.theme === "dark"
-                      ? "bg-sky-600 text-white"
-                      : "text-gray-400 hover:bg-[#111111]"
-                  }`}
-                >
-                  Dark
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleThemeChange("light");
-                  }}
-                  className={`flex-1 px-3 py-1.5 rounded-full transition-colors cursor-pointer ${
-                    settings.theme === "light"
-                      ? "bg-sky-600 text-white"
-                      : "text-gray-400 hover:bg-[#111111]"
-                  }`}
-                >
-                  Light
-                </button>
-              </div>
-            </section>
 
             {/* Chat experience */}
             <section className="mb-3 space-y-2">
