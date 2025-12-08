@@ -11,8 +11,8 @@ export async function adminFetch<T>(
 ): Promise<T> {
   const key = getAdminKey();
 
-  const headers: HeadersInit = {
-    ...(options.headers || {}),
+  const headers: Record<string, string> = {
+    ...(options.headers as Record<string, string> || {}),
   };
   if (key) headers["x-admin-key"] = key;
 

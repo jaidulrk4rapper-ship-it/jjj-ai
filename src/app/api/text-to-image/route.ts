@@ -62,6 +62,13 @@ export async function POST(req: Request) {
       response_format: "url", // We'll convert URL to base64
     });
 
+    if (!response.data || response.data.length === 0) {
+      return NextResponse.json(
+        { error: "No image data returned from OpenAI" },
+        { status: 500 }
+      );
+    }
+
     const imageUrl = response.data[0]?.url;
 
     if (!imageUrl) {
