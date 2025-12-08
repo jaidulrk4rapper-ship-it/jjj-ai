@@ -4,7 +4,7 @@ import { getUserIdFromRequest } from "@/lib/auth";
 import { getUserById } from "@/lib/users";
 
 const PRICE_INR =
-  Number(process.env.JJJAI_PRO_MONTHLY_PRICE_INR || "399");
+  Number(process.env.JJJAI_PRO_MONTHLY_PRICE_INR || "699");
 
 function getRazorpayInstance() {
   const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;

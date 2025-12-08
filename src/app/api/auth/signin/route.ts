@@ -43,6 +43,11 @@ export async function POST(req: NextRequest) {
 
     // Check if user exists with this email
     const existingUser = await getUserByEmail(normalizedEmail);
+    
+    // Debug logging (remove in production if needed)
+    if (existingUser && !isGoogleAuth) {
+      console.log(`[Signin] User found: ${normalizedEmail}, hasPasswordHash: ${!!existingUser.passwordHash}`);
+    }
 
     // If not Google auth, require password
     if (!isGoogleAuth) {
@@ -61,19 +66,28 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      // User exists, verify password
-      if (!existingUser.passwordHash) {
+      // User exists, check if password is set
+      if (!existingUser.passwordHash || existingUser.passwordHash === null) {
         return NextResponse.json(
-          { ok: false, error: "Account exists but no password set. Please contact support." },
+          { ok: false, error: "This account was created with Google sign-in. Please use 'Continue with Google' to sign in." },
           { status: 400 }
         );
       }
 
-      const isValid = await verifyPassword(password, existingUser.passwordHash);
-      if (!isValid) {
+      // Verify password
+      try {
+        const isValid = await verifyPassword(password, existingUser.passwordHash);
+        if (!isValid) {
+          return NextResponse.json(
+            { ok: false, error: "Invalid email or password" },
+            { status: 401 }
+          );
+        }
+      } catch (verifyError) {
+        console.error("Password verification error:", verifyError);
         return NextResponse.json(
-          { ok: false, error: "Invalid email or password" },
-          { status: 401 }
+          { ok: false, error: "Error verifying password. Please try again." },
+          { status: 500 }
         );
       }
     } else {

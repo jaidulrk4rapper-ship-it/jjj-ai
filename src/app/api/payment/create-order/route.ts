@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const amount = 39900; // ₹399 in paise
+    const amount = 69900; // ₹699 in paise
     const currency = "INR";
     const receipt = `jjjai_pro_${userId}_${Date.now()}`;
 

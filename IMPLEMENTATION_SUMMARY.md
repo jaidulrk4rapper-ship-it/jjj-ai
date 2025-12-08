@@ -46,7 +46,7 @@ This document summarizes the complete quota management and payment system implem
 
 #### Create Order (`src/app/api/payment/create-order/route.ts`)
 - ✅ Razorpay order creation
-- ✅ ₹399/month pricing
+- ✅ ₹699/month pricing
 - ✅ User validation
 
 #### Webhook Handler (`src/app/api/payment/webhook/route.ts`)
@@ -81,7 +81,7 @@ This document summarizes the complete quota management and payment system implem
 - **Text-to-Speech**: 5 clips/day, max 30 seconds each
 - **Images**: 5 images/day (when implemented)
 
-### Pro Plan (₹399/month)
+### Pro Plan (₹699/month)
 - **AI Chat**: 1,000+ messages/month, max 6,000 chars
 - **Text-to-Speech**: 300 minutes/month
 - **Images**: 300 images/month

@@ -189,7 +189,7 @@ export default function UpgradePage() {
               <Crown className="h-5 w-5 text-amber-400" />
             </div>
             <div className="mb-6">
-              <span className="text-4xl font-bold text-white">₹399</span>
+              <span className="text-4xl font-bold text-white">₹699</span>
               <span className="text-gray-400 ml-2">/month</span>
             </div>
             <ul className="space-y-4 mb-8">

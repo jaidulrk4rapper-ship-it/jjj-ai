@@ -87,7 +87,7 @@ Visit `http://localhost:3000` to see the application.
 - 5 Images per day
 - Max 2,000 characters per message
 
-### ✅ Pro Plan (₹399/month)
+### ✅ Pro Plan (₹699/month)
 - 1,000+ AI Chat messages per month
 - 300 minutes of Text-to-Speech per month
 - 300 Images per month

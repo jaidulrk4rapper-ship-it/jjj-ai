@@ -241,7 +241,7 @@ export default function Sidebar() {
                 href="/upgrade"
                 className="block w-full text-center rounded-md bg-sky-600 hover:bg-sky-700 text-white text-xs py-1.5 px-2 transition-colors"
               >
-                ₹399/month
+                ₹699/month
               </Link>
             </div>
           )}

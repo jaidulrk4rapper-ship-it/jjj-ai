@@ -2,33 +2,57 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useSettings } from "./settings-provider";
+import { useSettings } from "@/contexts/SettingsContext";
 
 export default function SettingsDock() {
   const [open, setOpen] = useState(false);
 
-  const {
-    replyLength,
-    setReplyLength,
-    showTimestamps,
-    toggleTimestamps,
-    fontSize,
-    setFontSize,
-    reducedMotion,
-    toggleReducedMotion,
-    defaultLang,
-    setDefaultLang,
-    theme,
-    setTheme,
-  } = useSettings();
+  const { settings, setSettings, resetSettings } = useSettings();
 
-  const handleReset = () => {
-    setReplyLength("normal");
-    if (!showTimestamps) toggleTimestamps();
-    setFontSize("medium");
-    if (reducedMotion) toggleReducedMotion();
-    setDefaultLang("auto");
-    setTheme("dark");
+  const handleThemeChange = (theme: "dark" | "light") => {
+    setSettings((prev) => {
+      const updated = { ...prev, theme };
+      console.log("Theme changed to:", theme, updated);
+      return updated;
+    });
+  };
+
+  const handleReplyLengthChange = (
+    replyLength: "short" | "normal" | "detailed"
+  ) => {
+    setSettings((prev) => {
+      const updated = { ...prev, replyLength };
+      console.log("Reply length changed to:", replyLength, updated);
+      return updated;
+    });
+  };
+
+  const toggleTimestamps = () => {
+    setSettings((prev) => ({
+      ...prev,
+      showTimestamps: !prev.showTimestamps,
+    }));
+  };
+
+  const handleFontSizeChange = (fontSize: "small" | "medium" | "large") => {
+    setSettings((prev) => ({ ...prev, fontSize }));
+  };
+
+  const toggleReducedMotion = () => {
+    setSettings((prev) => ({
+      ...prev,
+      reducedMotion: !prev.reducedMotion,
+    }));
+  };
+
+  const handleDefaultLanguageChange = (
+    lang: "auto" | "en" | "hi" | "bn"
+  ) => {
+    setSettings((prev) => {
+      const updated = { ...prev, defaultLanguage: lang };
+      console.log("Default language changed to:", lang, updated);
+      return updated;
+    });
   };
 
   return (
@@ -76,22 +100,38 @@ export default function SettingsDock() {
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
                 Theme
               </p>
-              <p className="text-[11px] text-gray-500">
-                Left = Dark, Right = Light
-              </p>
-              <button
-                type="button"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="relative mt-1 flex h-7 w-full items-center rounded-full border border-[#1A1A1A] bg-[#050505] px-1 text-[11px] text-gray-400"
-              >
-                <span className="flex-1 text-center">Dark</span>
-                <span className="flex-1 text-center">Light</span>
-                <span
-                  className={`absolute top-0.5 h-6 w-1/2 rounded-full bg-sky-600/80 shadow-[0_0_16px_rgba(56,189,248,0.7)] transition-transform ${
-                    theme === "dark" ? "translate-x-0" : "translate-x-full"
+              <div className="flex gap-1 rounded-full border border-[#1A1A1A] bg-[#050505] p-1 text-xs">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleThemeChange("dark");
+                  }}
+                  className={`flex-1 px-3 py-1.5 rounded-full transition-colors cursor-pointer ${
+                    settings.theme === "dark"
+                      ? "bg-sky-600 text-white"
+                      : "text-gray-400 hover:bg-[#111111]"
                   }`}
-                />
-              </button>
+                >
+                  Dark
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleThemeChange("light");
+                  }}
+                  className={`flex-1 px-3 py-1.5 rounded-full transition-colors cursor-pointer ${
+                    settings.theme === "light"
+                      ? "bg-sky-600 text-white"
+                      : "text-gray-400 hover:bg-[#111111]"
+                  }`}
+                >
+                  Light
+                </button>
+              </div>
             </section>
 
             {/* Chat experience */}
@@ -103,7 +143,7 @@ export default function SettingsDock() {
               {/* Reply length */}
               <div className="space-y-1">
                 <label className="text-xs text-gray-400">Reply length</label>
-                <div className="inline-flex rounded-full border border-[#1A1A1A] bg-[#050505] p-1 text-xs">
+                <div className="flex gap-1 rounded-full border border-[#1A1A1A] bg-[#050505] p-1 text-xs">
                   {[
                     { key: "short", label: "Short" },
                     { key: "normal", label: "Normal" },
@@ -112,11 +152,15 @@ export default function SettingsDock() {
                     <button
                       key={opt.key}
                       type="button"
-                      onClick={() =>
-                        setReplyLength(opt.key as typeof replyLength)
-                      }
-                      className={`px-3 py-1 rounded-full transition-colors ${
-                        replyLength === opt.key
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleReplyLengthChange(
+                          opt.key as "short" | "normal" | "detailed"
+                        );
+                      }}
+                      className={`flex-1 px-3 py-1.5 rounded-full transition-colors cursor-pointer ${
+                        settings.replyLength === opt.key
                           ? "bg-sky-600 text-white"
                           : "text-gray-400 hover:bg-[#111111]"
                       }`}
@@ -134,12 +178,12 @@ export default function SettingsDock() {
                   type="button"
                   onClick={toggleTimestamps}
                   className={`relative inline-flex h-5 w-9 items-center rounded-full border border-[#1A1A1A] px-0.5 transition-colors ${
-                    showTimestamps ? "bg-sky-600" : "bg-[#050505]"
+                    settings.showTimestamps ? "bg-sky-600" : "bg-[#050505]"
                   }`}
                 >
                   <span
                     className={`h-4 w-4 rounded-full bg-white transition-transform ${
-                      showTimestamps ? "translate-x-4" : "translate-x-0"
+                      settings.showTimestamps ? "translate-x-4" : "translate-x-0"
                     }`}
                   />
                 </button>
@@ -156,9 +200,9 @@ export default function SettingsDock() {
               <div className="space-y-1">
                 <label className="text-xs text-gray-400">Font size</label>
                 <select
-                  value={fontSize}
+                  value={settings.fontSize}
                   onChange={(e) =>
-                    setFontSize(e.target.value as typeof fontSize)
+                    handleFontSizeChange(e.target.value as "small" | "medium" | "large")
                   }
                   className="w-full rounded-lg border border-[#1A1A1A] bg-[#050505] px-2 py-1.5 text-xs text-gray-200 outline-none focus:ring-1 focus:ring-sky-500"
                 >
@@ -175,12 +219,12 @@ export default function SettingsDock() {
                   type="button"
                   onClick={toggleReducedMotion}
                   className={`relative inline-flex h-5 w-9 items-center rounded-full border border-[#1A1A1A] px-0.5 transition-colors ${
-                    reducedMotion ? "bg-sky-600" : "bg-[#050505]"
+                    settings.reducedMotion ? "bg-sky-600" : "bg-[#050505]"
                   }`}
                 >
                   <span
                     className={`h-4 w-4 rounded-full bg-white transition-transform ${
-                      reducedMotion ? "translate-x-4" : "translate-x-0"
+                      settings.reducedMotion ? "translate-x-4" : "translate-x-0"
                     }`}
                   />
                 </button>
@@ -195,15 +239,17 @@ export default function SettingsDock() {
               <div className="space-y-1">
                 <label className="text-xs text-gray-400">Default language</label>
                 <select
-                  value={defaultLang}
-                  onChange={(e) =>
-                    setDefaultLang(e.target.value as typeof defaultLang)
-                  }
-                  className="w-full rounded-lg border border-[#1A1A1A] bg-[#050505] px-2 py-1.5 text-xs text-gray-200 outline-none focus:ring-1 focus:ring-sky-500"
+                  value={settings.defaultLanguage}
+                  onChange={(e) => {
+                    const value = e.target.value as "auto" | "en" | "hi" | "bn";
+                    handleDefaultLanguageChange(value);
+                  }}
+                  className="w-full rounded-lg border border-[#1A1A1A] bg-[#050505] px-2 py-1.5 text-xs text-gray-200 outline-none focus:ring-1 focus:ring-sky-500 cursor-pointer"
                 >
                   <option value="auto">Auto detect</option>
                   <option value="en">English</option>
                   <option value="hi">Hindi</option>
+                  <option value="bn">Bangla</option>
                 </select>
               </div>
             </section>
@@ -212,7 +258,7 @@ export default function SettingsDock() {
             <div className="mt-2 border-t border-[#1A1A1A] pt-2">
               <button
                 type="button"
-                onClick={handleReset}
+                onClick={resetSettings}
                 className="w-full rounded-lg border border-[#1A1A1A] bg-[#050505] px-3 py-2 text-xs text-gray-300 hover:bg-[#111111]"
               >
                 Reset to defaults

@@ -1,7 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { SettingsProvider } from "@/components/settings-provider";
+import { SettingsProvider } from "@/contexts/SettingsContext";
 import SettingsDock from "@/components/SettingsDock";
 import ConditionalLayout from "@/components/admin/ConditionalLayout";
 import { UserProvider } from "@/providers/UserProvider";
@@ -29,15 +29,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-black text-gray-200`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
+        style={{
+          backgroundColor: 'var(--bg-color, #000000)',
+          color: 'var(--fg-color, #e5e7eb)',
+        }}
       >
-        <UserProvider>
         <UserProvider>
           <SettingsProvider>
             <ConditionalLayout>{children}</ConditionalLayout>
             <SettingsDock />
           </SettingsProvider>
-        </UserProvider>
         </UserProvider>
       </body>
     </html>

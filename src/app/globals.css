@@ -12,8 +12,42 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* Font size support from SettingsContext */
+html {
+  font-size: var(--jjj-font-size, 16px);
+}
+
+/* Dark / light theme support */
+html[data-theme="dark"] {
+  --bg-color: #000000;
+  --fg-color: #e5e7eb;
+  background-color: var(--bg-color);
+  color: var(--fg-color);
+}
+
+html[data-theme="light"] {
+  --bg-color: #ffffff;
+  --fg-color: #050816;
+  background-color: var(--bg-color);
+  color: var(--fg-color);
+}
+
+/* Ensure body uses theme colors */
+html[data-theme="dark"] body {
+  background-color: var(--bg-color);
+  color: var(--fg-color);
+}
+
+html[data-theme="light"] body {
+  background-color: var(--bg-color);
+  color: var(--fg-color);
+}
+
 body {
   /* Tailwind classes in layout.tsx handle styling, but keep vars for any custom CSS */
   background: var(--background);
   color: var(--foreground);
+  /* Use theme variables if available, fallback to existing vars */
+  background-color: var(--bg-color, var(--background));
+  color: var(--fg-color, var(--foreground));
 }

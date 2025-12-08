@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { useSettings } from "@/components/settings-provider";
+import { useSettings } from "@/contexts/SettingsContext";
 import { useJjjUser } from "@/providers/UserProvider";
 import { apiFetch } from "@/lib/apiClient";
 import LoginPrompt from "@/components/LoginPrompt";
@@ -15,15 +15,10 @@ type Message = {
 };
 
 export default function AiChatPage() {
-  const {
-    replyLength,
-    showTimestamps,
-    fontSize,
-    reducedMotion,
-    defaultLang,
-    theme,
-  } = useSettings();
+  const { settings } = useSettings();
   const { user, loading: userLoading } = useJjjUser();
+  
+  const { replyLength, showTimestamps, fontSize, reducedMotion, defaultLanguage, theme } = settings;
 
   // Show login prompt if user is not logged in
   if (!userLoading && (!user || !user.email)) {
@@ -126,6 +121,8 @@ export default function AiChatPage() {
         method: "POST",
         body: JSON.stringify({
           message: trimmed,
+          replyLength: replyLength,
+          defaultLanguage: defaultLanguage,
         }),
       }, user?.userId);
 
@@ -201,9 +198,9 @@ export default function AiChatPage() {
 
       {/* Chat container card */}
       <motion.div
-        initial={reducedMotion ? undefined : { opacity: 0, y: 12 }}
-        animate={reducedMotion ? undefined : { opacity: 1, y: 0 }}
-        transition={reducedMotion ? undefined : { duration: 0.35, ease: "easeOut" }}
+        initial={!reducedMotion ? { opacity: 0, y: 12 } : undefined}
+        animate={!reducedMotion ? { opacity: 1, y: 0 } : undefined}
+        transition={!reducedMotion ? { duration: 0.35, ease: "easeOut" } : undefined}
         className={`flex-1 flex flex-col rounded-2xl border ${containerBg} shadow-[0_0_40px_rgba(0,0,0,0.9)] backdrop-blur-xl overflow-hidden`}
       >
         {/* Messages list */}
@@ -236,17 +233,12 @@ export default function AiChatPage() {
             </div>
           ))}
 
-          {isLoading && !reducedMotion && (
+          {isLoading && (
             <div className="flex justify-start">
               <div className="inline-flex items-center gap-2 rounded-2xl bg-[#0A0A0A] border border-[#1A1A1A] px-3 py-2 text-xs text-gray-300 shadow-[0_0_18px_rgba(0,0,0,0.9)]">
-                <span className="h-2 w-2 rounded-full bg-sky-400 animate-ping" />
-                JJJ AI is thinking…
-              </div>
-            </div>
-          )}
-          {isLoading && reducedMotion && (
-            <div className="flex justify-start">
-              <div className="inline-flex items-center gap-2 rounded-2xl bg-[#0A0A0A] border border-[#1A1A1A] px-3 py-2 text-xs text-gray-300">
+                {!reducedMotion && (
+                  <span className="h-2 w-2 rounded-full bg-sky-400 animate-ping" />
+                )}
                 JJJ AI is thinking…
               </div>
             </div>

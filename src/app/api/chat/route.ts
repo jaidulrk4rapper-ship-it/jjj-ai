@@ -9,6 +9,8 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 type ChatRequestBody = {
   message: string;
+  replyLength?: "short" | "normal" | "detailed";
+  defaultLanguage?: "auto" | "en" | "hi" | "bn";
 };
 
 export async function POST(req: NextRequest) {
@@ -32,7 +34,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = (await req.json()) as ChatRequestBody;
-    const { message } = body;
+    const { message, replyLength = "normal", defaultLanguage = "auto" } = body;
 
     if (!message || !message.trim()) {
       return NextResponse.json(
@@ -53,20 +55,43 @@ export async function POST(req: NextRequest) {
       apiKey: OPENAI_API_KEY,
     });
 
+    // Configure reply length settings
+    let maxTokens = 1000;
+    let systemPrompt = "You are JJJ AI, a friendly and helpful AI assistant. Reply in a clear, concise, and helpful manner.";
+    
+    if (replyLength === "short") {
+      maxTokens = 300;
+      systemPrompt = "You are JJJ AI, a friendly and helpful AI assistant. Keep your answers concise and to the point. Be brief and direct.";
+    } else if (replyLength === "detailed") {
+      maxTokens = 2000;
+      systemPrompt = "You are JJJ AI, a friendly and helpful AI assistant. Provide detailed, comprehensive answers with examples and explanations when helpful.";
+    }
+
+    // Add language instruction if not auto
+    if (defaultLanguage && defaultLanguage !== "auto") {
+      const langMap: Record<string, string> = {
+        en: "English",
+        hi: "Hindi (हिंदी)",
+        bn: "Bangla (বাংলা)",
+      };
+      const langName = langMap[defaultLanguage] || "English";
+      systemPrompt = `You are JJJ AI, a friendly and helpful AI assistant. Always respond in ${langName}. ${systemPrompt.replace("You are JJJ AI, a friendly and helpful AI assistant. ", "")}`;
+    }
+
     // Call OpenAI API
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini", // Using GPT-4o-mini for cost-effective responses
       messages: [
         {
           role: "system",
-          content: "You are JJJ AI, a friendly and helpful AI assistant. Reply in a clear, concise, and helpful manner.",
+          content: systemPrompt,
         },
         {
           role: "user",
           content: message.trim(),
         },
       ],
-      max_tokens: 1000,
+      max_tokens: maxTokens,
       temperature: 0.7,
     });
 
