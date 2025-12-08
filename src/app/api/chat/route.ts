@@ -1,0 +1,100 @@
+import { NextResponse } from "next/server";
+import { checkUsage } from "@/lib/usageGuard";
+import { incrementUsage } from "@/lib/db";
+import OpenAI from "openai";
+
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+
+type ChatRequestBody = {
+  message: string;
+};
+
+export async function POST(req: Request) {
+  if (!OPENAI_API_KEY) {
+    return NextResponse.json(
+      { error: "OPENAI_API_KEY is not set" },
+      { status: 500 }
+    );
+  }
+
+  try {
+    const body = (await req.json()) as ChatRequestBody;
+    const { message } = body;
+
+    if (!message || !message.trim()) {
+      return NextResponse.json(
+        { error: "Message is required" },
+        { status: 400 }
+      );
+    }
+
+    // Check usage limits before processing
+    const usageCheck = await checkUsage(req, "chat");
+
+    if (!usageCheck.allowed) {
+      return NextResponse.json({ error: usageCheck.reason }, { status: 429 });
+    }
+
+    // Initialize OpenAI client
+    const openai = new OpenAI({
+      apiKey: OPENAI_API_KEY,
+    });
+
+    // Call OpenAI API
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini", // Using GPT-4o-mini for cost-effective responses
+      messages: [
+        {
+          role: "system",
+          content: "You are JJJ AI, a friendly and helpful AI assistant. Reply in a clear, concise, and helpful manner.",
+        },
+        {
+          role: "user",
+          content: message.trim(),
+        },
+      ],
+      max_tokens: 1000,
+      temperature: 0.7,
+    });
+
+    const reply = completion.choices[0]?.message?.content?.trim() || "";
+
+    if (!reply) {
+      return NextResponse.json(
+        { error: "No response received from OpenAI" },
+        { status: 500 }
+      );
+    }
+
+    // Increment usage after successful API call
+    try {
+      await incrementUsage(usageCheck.userId, "chat", {
+        messages: 1,
+      });
+    } catch (error) {
+      // Log but don't fail the request if usage tracking fails
+      console.error("Failed to increment usage:", error);
+    }
+
+    return NextResponse.json({
+      reply,
+    });
+  } catch (err: any) {
+    console.error("Chat API error:", err);
+    
+    // Better error handling for OpenAI API
+    let errorMessage = "Server error while handling request";
+    if (err?.response?.status === 401) {
+      errorMessage = "Invalid OpenAI API key. Please check your OPENAI_API_KEY in .env.local";
+    } else if (err?.response?.status === 429) {
+      errorMessage = "OpenAI API rate limit exceeded. Please try again later.";
+    } else if (err?.message) {
+      errorMessage = err.message;
+    }
+    
+    return NextResponse.json(
+      { error: errorMessage },
+      { status: 500 }
+    );
+  }
+}
