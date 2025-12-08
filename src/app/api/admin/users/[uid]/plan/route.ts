@@ -7,28 +7,33 @@ export async function POST(
   context: any
 ) {
   const { params } = context;
-  const { uid } = await params; // params Promise ho ya normal, dono me safe
+  const { uid } = await params;
 
   const db = getDb();
   const ref = db.collection("jjjaiUsers").doc(uid);
 
   const body = await req.json();
-  const { amount } = body;
+  const { plan } = body;
 
-  if (typeof amount !== "number" || !Number.isFinite(amount)) {
+  if (plan !== "free" && plan !== "pro") {
     return NextResponse.json(
-      { error: "Invalid amount" },
+      { error: "Invalid plan" },
       { status: 400 }
     );
   }
 
-  await ref.set(
-    {
-      coins: FieldValue.increment(amount),
-      updatedAt: FieldValue.serverTimestamp(),
-    },
-    { merge: true }
-  );
+  const update: any = {
+    plan,
+    updatedAt: FieldValue.serverTimestamp(),
+  };
+
+  if (plan === "pro") {
+    update.proSince = FieldValue.serverTimestamp();
+    update.proSource = "JJJ AI";
+  }
+
+  await ref.set(update, { merge: true });
 
   return NextResponse.json({ success: true });
 }
+

@@ -72,3 +72,8 @@ export function getFirebaseAdmin(): { app: App; db: Firestore } {
   }
 }
 
+export function getDb(): Firestore {
+  const { db } = getFirebaseAdmin();
+  return db;
+}
+
