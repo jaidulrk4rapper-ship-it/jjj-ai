@@ -5,7 +5,7 @@ import { FieldValue } from "firebase-admin/firestore";
 
 export async function GET(
   req: NextRequest,
-  context: any
+  context: { params: Promise<{ uid: string }> }
 ) {
   try {
     if (!checkAdminSecretKey(req)) {
@@ -47,7 +47,7 @@ export async function GET(
 
 export async function PATCH(
   req: NextRequest,
-  context: any
+  context: { params: Promise<{ uid: string }> }
 ) {
   try {
     if (!checkAdminSecretKey(req)) {
@@ -92,7 +92,7 @@ export async function PATCH(
 
 export async function DELETE(
   req: NextRequest,
-  context: any
+  context: { params: Promise<{ uid: string }> }
 ) {
   try {
     if (!checkAdminSecretKey(req)) {

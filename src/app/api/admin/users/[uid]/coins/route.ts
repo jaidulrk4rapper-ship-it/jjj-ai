@@ -4,10 +4,10 @@ import { FieldValue } from "firebase-admin/firestore";
 
 export async function POST(
   req: NextRequest,
-  context: any
+  context: { params: Promise<{ uid: string }> }
 ) {
   const { params } = context;
-  const { uid } = await params; // params Promise ho ya normal, dono me safe
+  const { uid } = await params;
 
   const db = getDb();
   const ref = db.collection("jjjaiUsers").doc(uid);

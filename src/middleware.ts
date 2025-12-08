@@ -1,4 +1,4 @@
-// src/proxy.ts
+// src/middleware.ts
 
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 const ADMIN_SECRET_KEY = process.env.ADMIN_SECRET_KEY;
 
 // Protect only /api/admin/* routes (except login)
-export function proxy(req: NextRequest) {
+export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Skip protection for login route (it's the one that gives you the key)
