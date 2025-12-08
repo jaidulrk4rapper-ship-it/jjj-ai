@@ -1,4 +1,4 @@
-// src/middleware.ts
+// src/proxy.ts
 
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 const ADMIN_SECRET_KEY = process.env.ADMIN_SECRET_KEY;
 
 // Protect only /api/admin/* routes (except login)
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Skip protection for login route (it's the one that gives you the key)
@@ -36,3 +36,4 @@ export function middleware(req: NextRequest) {
 export const config = {
   matcher: ["/api/admin/:path*"],
 };
+

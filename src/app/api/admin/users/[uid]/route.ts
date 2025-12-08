@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { checkAdminSecretKey } from "@/lib/adminAuth";
 import { getFirebaseAdmin } from "@/lib/firebaseAdmin";
 import { FieldValue } from "firebase-admin/firestore";
 
 export async function GET(
-  req: Request,
-  { params }: { params: { uid: string } }
+  req: NextRequest,
+  context: any
 ) {
   try {
     if (!checkAdminSecretKey(req)) {
@@ -15,8 +15,11 @@ export async function GET(
       );
     }
 
+    const { params } = context;
+    const { uid } = await params;
+
     const { db } = getFirebaseAdmin();
-    const doc = await db.collection("jjjaiUsers").doc(params.uid).get();
+    const doc = await db.collection("jjjaiUsers").doc(uid).get();
 
     if (!doc.exists) {
       return NextResponse.json(
@@ -43,8 +46,8 @@ export async function GET(
 }
 
 export async function PATCH(
-  req: Request,
-  { params }: { params: { uid: string } }
+  req: NextRequest,
+  context: any
 ) {
   try {
     if (!checkAdminSecretKey(req)) {
@@ -54,11 +57,14 @@ export async function PATCH(
       );
     }
 
+    const { params } = context;
+    const { uid } = await params;
+
     const body = await req.json();
     const { plan, coins } = body;
 
     const { db } = getFirebaseAdmin();
-    const ref = db.collection("jjjaiUsers").doc(params.uid);
+    const ref = db.collection("jjjaiUsers").doc(uid);
 
     const update: Record<string, any> = {
       updatedAt: FieldValue.serverTimestamp(),
@@ -85,8 +91,8 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  req: Request,
-  { params }: { params: { uid: string } }
+  req: NextRequest,
+  context: any
 ) {
   try {
     if (!checkAdminSecretKey(req)) {
@@ -96,8 +102,11 @@ export async function DELETE(
       );
     }
 
+    const { params } = context;
+    const { uid } = await params;
+
     const { db } = getFirebaseAdmin();
-    await db.collection("jjjaiUsers").doc(params.uid).delete();
+    await db.collection("jjjaiUsers").doc(uid).delete();
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
