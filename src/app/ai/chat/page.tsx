@@ -289,15 +289,15 @@ export default function AiChatPage() {
   const hasMessages = messages.length > 0;
 
   return (
-    <main className="flex flex-col min-h-screen bg-[#020617] relative overflow-hidden">
+    <main className="flex flex-col min-h-screen bg-[#020617] text-slate-50 relative overflow-hidden">
       {/* Background glow effect */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -left-40 top-[-120px] h-72 w-72 rounded-full bg-sky-500/5 blur-3xl" />
         <div className="absolute right-[-120px] top-20 h-80 w-80 rounded-full bg-indigo-500/5 blur-3xl" />
       </div>
 
-      {/* Top bar - Mobile & Desktop */}
-      <div className="relative z-10 flex items-center justify-between border-b border-slate-800/80 bg-[#020617]/95 backdrop-blur-sm px-3 md:px-4 py-2.5 md:py-3 flex-shrink-0">
+      {/* Header */}
+      <header className="relative z-10 flex items-center justify-between border-b border-slate-800/80 bg-[#020617]/95 backdrop-blur-sm px-4 pt-3 pb-2 flex-shrink-0 md:px-4 md:pt-3 md:pb-2">
         {/* Mobile: Hamburger menu */}
         <div className="flex items-center gap-2 md:gap-2">
           <button className="md:hidden p-1.5 text-slate-400 hover:text-slate-200 transition-colors">
@@ -309,8 +309,8 @@ export default function AiChatPage() {
         {/* Icons - Removed refresh, user icon, and JJJ AI button as per requirements */}
       </div>
 
-      {/* Chat area - Mobile: single scroll, Desktop: fixed height */}
-      <section className="flex-1 overflow-y-auto px-3 md:px-4 pb-20 md:pb-4" ref={listRef}>
+      {/* Scrollable messages area */}
+      <section className="flex-1 overflow-y-auto px-4 pb-4 md:px-4 md:pb-4" ref={listRef}>
         {!hasMessages ? (
           // Empty state - Mobile & Desktop
           <div className="flex h-full flex-col items-center justify-center px-4">
@@ -324,8 +324,8 @@ export default function AiChatPage() {
               </p>
             </div>
             {/* Mobile: Suggested prompts */}
-            <div className="md:hidden w-full max-w-md px-4 pb-20 overflow-x-hidden">
-              <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide px-4">
+            <div className="md:hidden w-full max-w-md overflow-x-hidden">
+              <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide">
                 {suggestedPrompts.map((prompt, idx) => (
                   <button
                     key={idx}
@@ -412,77 +412,96 @@ export default function AiChatPage() {
         )}
       </section>
 
-      {/* Input area - Mobile & Desktop - Fixed at bottom on mobile */}
-      <section className="fixed bottom-0 inset-x-0 z-10 border-t border-slate-800/80 bg-[#020617]/95 backdrop-blur-sm px-3 md:px-4 py-2 md:py-2 pb-4 md:pb-2 safe-area-bottom md:relative md:border-t md:bg-[#020617]/95">
-        {/* Actions Tray */}
-        <div className="relative mb-2">
-          <ChatActionsTray
-            isOpen={isActionsOpen}
-            onClose={() => setIsActionsOpen(false)}
-            onActionClick={handleQuickAction}
-          />
-        </div>
-        
-        <form onSubmit={handleSubmit} className="mx-auto w-full max-w-3xl">
-          <div className="relative flex items-end gap-2 rounded-2xl border border-slate-800/80 bg-slate-900/70 backdrop-blur-sm shadow-[0_0_20px_rgba(0,0,0,0.3)] hover:border-sky-500/30 transition-colors">
-            <button
-              type="button"
-              onClick={() => setIsActionsOpen((v) => !v)}
-              className="p-2.5 md:p-3 text-slate-400 hover:text-sky-400 transition-colors"
-              title="Quick actions"
-            >
-              <Plus className="h-5 w-5" />
-            </button>
-            <textarea
-              ref={textareaRef}
-              rows={1}
-              className="flex-1 resize-none bg-transparent px-2 py-2.5 md:py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none max-h-[200px]"
-              placeholder="Ask anything"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  if (input.trim() && !isLoading && !isSubmittingRef.current) {
-                    handleSubmit(e);
-                  }
-                }
-              }}
-              disabled={isLoading}
+      {/* Bottom input + mini footer */}
+      <footer className="border-t border-slate-800 bg-[#020617] flex-shrink-0">
+        <div className="px-4 pt-2 pb-1 md:px-4 md:pt-2 md:pb-1">
+          {/* Actions Tray */}
+          <div className="relative mb-2">
+            <ChatActionsTray
+              isOpen={isActionsOpen}
+              onClose={() => setIsActionsOpen(false)}
+              onActionClick={handleQuickAction}
             />
-            <div className="flex items-center gap-0.5 md:gap-1 p-1.5 md:p-2">
+          </div>
+          
+          <form onSubmit={handleSubmit} className="mx-auto w-full max-w-3xl">
+            <div className="relative flex items-end gap-2 rounded-2xl border border-slate-800/80 bg-slate-900/70 backdrop-blur-sm shadow-[0_0_20px_rgba(0,0,0,0.3)] hover:border-sky-500/30 transition-colors">
               <button
                 type="button"
-                className="p-1.5 md:p-2 text-slate-400 hover:text-sky-400 transition-colors"
-                title="Voice input"
+                onClick={() => setIsActionsOpen((v) => !v)}
+                className="p-2.5 md:p-3 text-slate-400 hover:text-sky-400 transition-colors"
+                title="Quick actions"
               >
-                <Mic className="h-5 w-5" />
+                <Plus className="h-5 w-5" />
               </button>
-              {input.trim() ? (
-                <button
-                  type="submit"
-                  disabled={isLoading || isSubmittingRef.current}
-                  className="p-1.5 md:p-2 text-sky-400 hover:text-sky-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  title="Send"
-                >
-                  <Send className="h-5 w-5" />
-                </button>
-              ) : (
+              <textarea
+                ref={textareaRef}
+                rows={1}
+                className="flex-1 resize-none bg-transparent px-2 py-2.5 md:py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none max-h-[200px]"
+                placeholder="Ask anything"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    if (input.trim() && !isLoading && !isSubmittingRef.current) {
+                      handleSubmit(e);
+                    }
+                  }
+                }}
+                disabled={isLoading}
+              />
+              <div className="flex items-center gap-0.5 md:gap-1 p-1.5 md:p-2">
                 <button
                   type="button"
                   className="p-1.5 md:p-2 text-slate-400 hover:text-sky-400 transition-colors"
-                  title="Voice output"
+                  title="Voice input"
                 >
-                  <Volume2 className="h-5 w-5" />
+                  <Mic className="h-5 w-5" />
                 </button>
-              )}
+                {input.trim() ? (
+                  <button
+                    type="submit"
+                    disabled={isLoading || isSubmittingRef.current}
+                    className="p-1.5 md:p-2 text-sky-400 hover:text-sky-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    title="Send"
+                  >
+                    <Send className="h-5 w-5" />
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="p-1.5 md:p-2 text-slate-400 hover:text-sky-400 transition-colors"
+                    title="Voice output"
+                  >
+                    <Volume2 className="h-5 w-5" />
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-          <p className="hidden md:block mt-1 text-center text-xs text-slate-500">
-            JJJ AI can make mistakes. Check important info.
-          </p>
-        </form>
-      </section>
+            <p className="hidden md:block mt-1 text-center text-xs text-slate-500">
+              JJJ AI can make mistakes. Check important info.
+            </p>
+          </form>
+        </div>
+
+        {/* Mini policy row */}
+        <div className="px-4 pb-3 text-[10px] text-slate-500 flex flex-wrap items-center gap-x-3 gap-y-1 md:text-xs">
+          <span>© {new Date().getFullYear()} JJJ AI Studio</span>
+          <a href="/contact" className="underline-offset-2 hover:underline">
+            Contact Us
+          </a>
+          <a href="/terms" className="underline-offset-2 hover:underline">
+            Terms &amp; Conditions
+          </a>
+          <a href="/privacy" className="underline-offset-2 hover:underline">
+            Privacy Policy
+          </a>
+          <a href="/refund" className="underline-offset-2 hover:underline">
+            Refund &amp; Cancellation Policy
+          </a>
+        </div>
+      </footer>
     </main>
   );
 }

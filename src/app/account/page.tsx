@@ -58,9 +58,61 @@ export default function AccountPage() {
     }
   };
 
+  const email = user?.email || "";
+  const plan = user?.plan === "pro" ? "JJJ AI Pro" : "Free Plan";
+  const coins = user?.coins || 0;
+
   return (
     <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
-      <div className="max-w-2xl mx-auto space-y-6 w-full">
+      {/* Mobile Layout */}
+      <div className="w-full max-w-sm mx-auto p-3 space-y-4 md:hidden">
+        {/* Header */}
+        <h1 className="text-xl font-semibold">Account Settings</h1>
+        <p className="text-sm text-gray-400 -mt-2">Manage your account information and preferences</p>
+
+        {/* Account Info Card */}
+        <div className="bg-[#111827] rounded-xl p-4 space-y-3 border border-gray-800">
+          <h2 className="text-lg font-medium flex items-center gap-2">
+            <span>👤</span> Account Information
+          </h2>
+
+          <div className="text-sm space-y-1">
+            <p className="text-gray-400">Email Address</p>
+            <p className="font-medium">{email}</p>
+          </div>
+
+          <div className="text-sm space-y-1">
+            <p className="text-gray-400">Plan</p>
+            <p className="font-medium">{plan}</p>
+          </div>
+
+          <div className="text-sm space-y-1">
+            <p className="text-gray-400">Coins Balance</p>
+            <p className="font-medium">{coins} coins</p>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="space-y-3">
+          <button
+            onClick={handleLogout}
+            disabled={logoutLoading}
+            className="w-full bg-gray-800 text-sm py-2 rounded-lg"
+          >
+            {logoutLoading ? "Logging out..." : "Log out"}
+          </button>
+
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="w-full bg-red-600 text-sm py-2 rounded-lg"
+          >
+            Delete Account
+          </button>
+        </div>
+      </div>
+
+      {/* Desktop Layout */}
+      <div className="hidden md:block max-w-2xl mx-auto space-y-6 w-full">
         {/* Header */}
         <div>
           <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white mb-2">

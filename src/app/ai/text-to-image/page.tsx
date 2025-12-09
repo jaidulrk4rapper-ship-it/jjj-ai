@@ -95,37 +95,29 @@ export default function TextToImagePage() {
   const mainImage = images[0];
 
   return (
-    <main className="flex flex-col min-h-screen bg-black text-gray-100 overflow-hidden">
-      {/* Mobile Header with Title */}
-      <div className="md:hidden px-4 pt-4 pb-2 flex-shrink-0">
-        <h1 className="text-lg font-semibold text-white">Text to Image</h1>
-        <p className="mt-1 text-xs text-gray-400">
-          Type a prompt, pick a style and let JJJ AI create images for you.
-        </p>
-      </div>
-      
-      <div className="flex flex-col md:flex-row flex-1 gap-4 md:gap-6 px-3 sm:px-4 md:px-6 pt-2 md:pt-4 overflow-hidden">
-        {/* LEFT: Controls - Hidden on mobile, visible on desktop */}
-        <section className="hidden md:flex md:w-[380px] flex-shrink-0 flex-col gap-4 rounded-2xl border border-[#1a1a1a] bg-[#050505] p-4 overflow-y-auto">
+    <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 overflow-x-hidden">
+      <div className="flex flex-col gap-4 md:grid md:grid-cols-[minmax(0,2fr)_minmax(0,1.3fr)] md:gap-6">
+        {/* LEFT: Controls - Full width on mobile, fixed width on desktop */}
+        <section className="w-full rounded-2xl border border-[#1a1a1a] bg-[#020617] p-4 sm:p-5 md:p-6 flex flex-col gap-4 md:h-auto overflow-y-auto">
           <div>
-            <h1 className="text-lg font-semibold text-white">Text to Image</h1>
-            <p className="mt-1 text-xs text-gray-400">
+            <h1 className="text-2xl font-bold md:text-3xl text-white">Text to Image</h1>
+            <p className="mt-1 text-sm text-slate-300 md:text-base">
               Type a prompt, pick a style and let JJJ AI create images for you.
             </p>
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-medium text-gray-300">
+            <label className="text-xs md:text-sm font-medium text-gray-300">
               Prompt
             </label>
             <textarea
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              rows={5}
-              className="w-full rounded-xl border border-[#262626] bg-[#020617] px-3 py-2 text-xs text-gray-100 outline-none ring-0 focus:border-sky-500"
+              rows={4}
+              className="w-full max-w-full rounded-xl border border-[#262626] bg-[#020617] px-3 py-2 text-xs md:text-sm text-gray-100 outline-none ring-0 focus:border-sky-500"
               placeholder="Example: ultra realistic cyberpunk city at night with neon signs and rain reflections..."
             />
-            <p className="mt-1 text-[11px] text-gray-500">
+            <p className="mt-1 text-[10px] md:text-xs text-gray-500">
               Tip: Add lighting, mood and camera angle for more cinematic images.
             </p>
           </div>
@@ -133,12 +125,12 @@ export default function TextToImagePage() {
           {/* Style presets */}
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-gray-300">
+              <span className="text-xs md:text-sm font-medium text-gray-300">
                 Style presets
               </span>
               {selectedStyle && (
                 <button
-                  className="text-[11px] text-gray-400 hover:text-sky-400"
+                  className="text-[10px] md:text-xs text-gray-400 hover:text-sky-400"
                   onClick={() => setSelectedStyle(null)}
                 >
                   Clear
@@ -171,7 +163,7 @@ export default function TextToImagePage() {
 
           {/* Size selector */}
           <div>
-            <span className="text-xs font-medium text-gray-300">Aspect ratio</span>
+            <span className="text-xs md:text-sm font-medium text-gray-300">Aspect ratio</span>
             <div className="mt-2 flex gap-2">
               <button
                 onClick={() => setSize("square")}
@@ -218,28 +210,28 @@ export default function TextToImagePage() {
           <button
             onClick={handleGenerate}
             disabled={loading}
-            className="mt-auto flex items-center justify-center rounded-xl bg-sky-500 px-4 py-2 text-sm font-semibold text-black hover:bg-sky-400 disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-2 md:mt-auto flex items-center justify-center rounded-xl bg-sky-500 px-4 py-2.5 md:py-2 text-xs md:text-sm font-semibold text-black hover:bg-sky-400 disabled:cursor-not-allowed disabled:opacity-60 w-full"
           >
             {loading ? "Generating…" : "Generate image"}
           </button>
         </section>
 
-        {/* RIGHT: Preview + history */}
-        <section className="flex flex-1 flex-col gap-4 rounded-2xl border border-[#1a1a1a] bg-[#020617] p-4">
+        {/* RIGHT: Preview + history - Full width on mobile, below controls */}
+        <section className="w-full rounded-2xl border border-[#1a1a1a] bg-[#020617] p-4 sm:p-5 md:p-6 flex flex-col gap-4 overflow-y-auto pb-20 md:pb-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-semibold text-white">
+              <h2 className="text-lg md:text-xl font-semibold text-white">
                 Canvas
               </h2>
-              <p className="text-[11px] text-gray-400">
+              <p className="text-xs md:text-sm text-gray-400">
                 Latest image on top. Click download to save and share.
               </p>
             </div>
           </div>
 
           {/* Main preview */}
-          <div className="flex flex-1 gap-4 overflow-hidden">
-            <div className="flex-1 rounded-2xl border border-[#1f2933] bg-black/60 p-3">
+          <div className="flex flex-col md:flex-row flex-1 gap-4 overflow-hidden">
+            <div className="flex-1 rounded-2xl border border-[#1f2933] bg-black/60 p-3 min-h-[300px] md:min-h-0">
               {mainImage ? (
                 <div className="flex h-full flex-col">
                   <div className="relative flex-1 overflow-hidden rounded-xl bg-black">
@@ -276,8 +268,8 @@ export default function TextToImagePage() {
               )}
             </div>
 
-            {/* History thumbnails */}
-            <div className="w-52 space-y-2 overflow-y-auto rounded-2xl border border-[#1f2933] bg-black/60 p-3 text-[11px]">
+            {/* History thumbnails - Full width on mobile, fixed width on desktop */}
+            <div className="w-full md:w-52 space-y-2 overflow-y-auto rounded-2xl border border-[#1f2933] bg-black/60 p-3 text-[11px] max-h-[200px] md:max-h-none">
               <div className="mb-1 flex items-center justify-between">
                 <span className="font-semibold text-gray-200">
                   History

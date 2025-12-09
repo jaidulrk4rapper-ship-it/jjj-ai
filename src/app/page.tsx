@@ -204,200 +204,142 @@ export default function HomePage() {
               </Link>
             </div>
           </section>
-
-          {/* Desktop footer */}
-          <footer className="border-t border-slate-800 mt-12 py-6 text-sm text-slate-400">
-            <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4">
-              <span>© {new Date().getFullYear()} JJJ AI Studio</span>
-              <div className="flex gap-4">
-                <a href="/contact" className="hover:underline">
-                  Contact Us
-                </a>
-                <a href="/terms" className="hover:underline">
-                  Terms &amp; Conditions
-                </a>
-                <a href="/privacy" className="hover:underline">
-                  Privacy Policy
-                </a>
-                <a href="/refund" className="hover:underline">
-                  Refund &amp; Cancellation Policy
-                </a>
-              </div>
-            </div>
-          </footer>
           </div>
         </div>
       </div>
 
       {/* MOBILE LAYOUT (below md) */}
-      <div className="relative block md:hidden w-full overflow-x-hidden">
-        <div className="flex min-h-screen flex-col bg-[#020617]/95 px-4 py-5 pb-20 w-full">
-          {/* Mobile header */}
-          <header className="mb-4 flex items-center justify-between">
+      <div className="md:hidden flex min-h-screen flex-col items-center bg-[#020617] text-slate-50">
+        {/* MAIN CONTENT */}
+        <div className="w-full max-w-sm flex-1 px-4 pt-4 pb-2 flex flex-col gap-3">
+          {/* Top brand row */}
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-sky-500/60 bg-slate-900/70 shadow-[0_0_18px_rgba(56,189,248,0.45)]">
-                <span className="text-sm font-semibold text-sky-200">JJJ</span>
+              <div className="h-9 w-9 rounded-2xl bg-gradient-to-br from-sky-500 to-indigo-500 flex items-center justify-center text-xs font-semibold">
+                JJJ
               </div>
-              <div className="leading-tight">
-                <p className="text-xs font-semibold text-slate-100">
-                  JJJ AI Studio
-                </p>
-                <p className="text-[10px] text-slate-400">
-                  All tools in one screen
-                </p>
+              <div className="flex flex-col leading-tight">
+                <span className="text-sm font-semibold">JJJ AI Studio</span>
+                <span className="text-[11px] text-slate-400">All tools · One screen</span>
               </div>
             </div>
+
             <Link
               href="/"
-              className="rounded-full bg-gradient-to-r from-sky-500 to-cyan-400 px-3 py-1.5 text-[10px] font-semibold text-slate-950 shadow-[0_10px_30px_rgba(56,189,248,0.50)] transition-all hover:from-sky-400 hover:to-cyan-300"
+              className="rounded-full px-3 py-1 text-[11px] font-medium bg-sky-500/90 hover:bg-sky-400 active:scale-[0.97] shadow-sm"
             >
               Open Studio
             </Link>
-          </header>
+          </div>
 
-          {/* ONE-SCREEN TOOLS GRID */}
-          <section className="flex-1 rounded-3xl border border-slate-800 bg-slate-900/70 p-3 shadow-[0_18px_40px_rgba(15,23,42,0.9)]">
-            <h1 className="mb-1.5 text-sm font-semibold text-slate-50">
-              Welcome, boss 👑
-            </h1>
-            <p className="mb-3 text-[10px] text-slate-300">
-              Sab main features ek hi screen pe. Tap karke seedha tool open
-              karo — scroll kam, kaam zyada.
+          {/* Welcome card */}
+          <div className="rounded-3xl bg-gradient-to-br from-[#020b2b] via-[#020617] to-[#0b1120] border border-slate-800/70 px-4 py-3 shadow-[0_0_35px_rgba(15,23,42,0.7)]">
+            <p className="text-xs text-slate-400">Welcome, boss 👑</p>
+            <p className="mt-1 text-[11px] text-slate-400">
+              Sab main features ek hi screen pe. Tool tap karo, seedha open hoga — scroll kam, kaam zyada.
             </p>
+          </div>
 
-            <div className="grid h-[72vh] grid-cols-2 grid-rows-3 gap-3">
-              {/* AI Chat */}
-              <Link
-                href="/ai/chat"
-                className="flex flex-col items-start justify-between rounded-2xl border border-slate-800 bg-slate-900/95 px-3 py-2 text-left shadow-[0_10px_26px_rgba(15,23,42,0.9)] hover:border-sky-500/50 transition-colors"
-              >
-                <div className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-sky-500/20 text-sky-300 text-sm">
-                  💬
-                </div>
-                <div>
-                  <div className="text-xs font-semibold text-slate-50">
-                    AI Chat
-                  </div>
-                  <div className="mt-0.5 text-[9px] text-slate-400">
-                    Doubt clear, scripts, ideas — sab ek jagah.
-                  </div>
-                </div>
-              </Link>
-
-              {/* TTS */}
-              <Link
-                href="/ai/text-to-speech"
-                className="flex flex-col items-start justify-between rounded-2xl border border-slate-800 bg-slate-900/95 px-3 py-2 text-left shadow-[0_10px_26px_rgba(15,23,42,0.9)] hover:border-purple-500/50 transition-colors"
-              >
-                <div className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-purple-500/20 text-purple-300 text-sm">
-                  🔊
-                </div>
-                <div>
-                  <div className="text-xs font-semibold text-slate-50">
-                    Text → Speech
-                  </div>
-                  <div className="mt-0.5 text-[9px] text-slate-400">
-                    Reels &amp; videos ke liye natural voice.
-                  </div>
-                </div>
-              </Link>
-
-              {/* STT */}
-              <Link
-                href="/ai/speech-to-text"
-                className="flex flex-col items-start justify-between rounded-2xl border border-slate-800 bg-slate-900/95 px-3 py-2 text-left shadow-[0_10px_26px_rgba(15,23,42,0.9)] hover:border-emerald-500/50 transition-colors"
-              >
-                <div className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-300 text-sm">
-                  🎙️
-                </div>
-                <div>
-                  <div className="text-xs font-semibold text-slate-50">
-                    Speech → Text
-                  </div>
-                  <div className="mt-0.5 text-[9px] text-slate-400">
-                    Meetings, notes &amp; audio ko text bana do.
-                  </div>
-                </div>
-              </Link>
-
-              {/* Text to Image */}
-              <Link
-                href="/ai/text-to-image"
-                className="flex flex-col items-start justify-between rounded-2xl border border-amber-400/60 bg-gradient-to-br from-slate-900/90 via-slate-900/60 to-amber-900/60 px-3 py-2 text-left shadow-[0_12px_30px_rgba(245,158,11,0.4)] hover:border-amber-400/90 transition-colors"
-              >
-                <div className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/20 text-amber-300 text-sm">
-                  🖼️
-                </div>
-                <div>
-                  <div className="text-xs font-semibold text-slate-50">
-                    Text → Image
-                  </div>
-                  <div className="mt-0.5 text-[9px] text-amber-100/90">
-                    Thumbnail, poster, banner – sab AI se.
-                  </div>
-                </div>
-              </Link>
-
-              {/* Upgrade card */}
-              <Link
-                href="/upgrade"
-                className="flex flex-col items-start justify-between rounded-2xl border border-yellow-400/60 bg-yellow-500/10 px-3 py-2 text-left shadow-[0_10px_26px_rgba(202,138,4,0.55)] hover:border-yellow-400/90 transition-colors"
-              >
-                <div className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-yellow-500/20 text-yellow-300 text-sm">
-                  👑
-                </div>
-                <div>
-                  <div className="text-xs font-semibold text-yellow-100">
-                    Upgrade to Pro
-                  </div>
-                  <div className="mt-0.5 text-[9px] text-yellow-100/90">
-                    High limits, priority access – ₹699/month.
-                  </div>
-                </div>
-              </Link>
-
-              {/* Account / Settings */}
-              <Link
-                href="/account"
-                className="flex flex-col items-start justify-between rounded-2xl border border-slate-700 bg-slate-900/95 px-3 py-2 text-left shadow-[0_10px_26px_rgba(15,23,42,0.9)] hover:border-slate-600 transition-colors"
-              >
-                <div className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-sky-500/20 text-sky-300 text-sm">
-                  ⚙️
-                </div>
-                <div>
-                  <div className="text-xs font-semibold text-slate-50">
-                    Account &amp; Settings
-                  </div>
-                  <div className="mt-0.5 text-[9px] text-slate-400">
-                    Usage, plan, profile &amp; support.
-                  </div>
-                </div>
-              </Link>
-            </div>
-          </section>
-
-          {/* Mobile footer – compact buttons */}
-          <footer className="border-t border-slate-800 mt-12 py-6 text-sm text-slate-400">
-            <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4">
-              <span>© {new Date().getFullYear()} JJJ AI Studio</span>
-              <div className="flex gap-4">
-                <a href="/contact" className="hover:underline">
-                  Contact Us
-                </a>
-                <a href="/terms" className="hover:underline">
-                  Terms &amp; Conditions
-                </a>
-                <a href="/privacy" className="hover:underline">
-                  Privacy Policy
-                </a>
-                <a href="/refund" className="hover:underline">
-                  Refund &amp; Cancellation Policy
-                </a>
+          {/* Feature grid – smaller premium-style buttons */}
+          <div className="grid grid-cols-2 gap-3 text-sm">
+            {/* AI Chat */}
+            <Link
+              href="/ai/chat"
+              className="flex flex-col items-start rounded-2xl bg-[#020b2b] border border-slate-800/80 px-3 py-3 shadow-sm active:scale-[0.97]"
+            >
+              <div className="mb-2 flex h-7 w-7 items-center justify-center rounded-xl bg-sky-500/20 text-xs">
+                💬
               </div>
-            </div>
-          </footer>
+              <span className="text-xs font-semibold">AI Chat</span>
+              <span className="mt-0.5 text-[11px] text-slate-400">
+                Doubt clear, scripts, ideas.
+              </span>
+            </Link>
+
+            {/* Text → Speech */}
+            <Link
+              href="/ai/text-to-speech"
+              className="flex flex-col items-start rounded-2xl bg-[#020b2b] border border-slate-800/80 px-3 py-3 shadow-sm active:scale-[0.97]"
+            >
+              <div className="mb-2 flex h-7 w-7 items-center justify-center rounded-xl bg-violet-500/20 text-xs">
+                🎧
+              </div>
+              <span className="text-xs font-semibold">Text → Speech</span>
+              <span className="mt-0.5 text-[11px] text-slate-400">
+                Reels & videos ke liye voice.
+              </span>
+            </Link>
+
+            {/* Speech → Text */}
+            <Link
+              href="/ai/speech-to-text"
+              className="flex flex-col items-start rounded-2xl bg-[#020b2b] border border-slate-800/80 px-3 py-3 shadow-sm active:scale-[0.97]"
+            >
+              <div className="mb-2 flex h-7 w-7 items-center justify-center rounded-xl bg-emerald-500/20 text-xs">
+                📝
+              </div>
+              <span className="text-xs font-semibold">Speech → Text</span>
+              <span className="mt-0.5 text-[11px] text-slate-400">
+                Notes, meetings ko text banao.
+              </span>
+            </Link>
+
+            {/* Text → Image */}
+            <Link
+              href="/ai/text-to-image"
+              className="flex flex-col items-start rounded-2xl bg-[#020b2b] border border-amber-500/60 px-3 py-3 shadow-[0_0_20px_rgba(245,158,11,0.35)] active:scale-[0.97]"
+            >
+              <div className="mb-2 flex h-7 w-7 items-center justify-center rounded-xl bg-amber-500/20 text-xs">
+                🖼️
+              </div>
+              <span className="text-xs font-semibold">Text → Image</span>
+              <span className="mt-0.5 text-[11px] text-amber-100/90">
+                Thumbnail, poster, banner.
+              </span>
+            </Link>
+
+            {/* Upgrade to Pro */}
+            <Link
+              href="/upgrade"
+              className="flex flex-col items-start rounded-2xl bg-gradient-to-br from-amber-500 via-amber-400 to-yellow-400 px-3 py-3 text-slate-900 shadow-[0_0_28px_rgba(250,204,21,0.6)] active:scale-[0.97]"
+            >
+              <div className="mb-2 flex h-7 w-7 items-center justify-center rounded-xl bg-black/10 text-xs">
+                👑
+              </div>
+              <span className="text-xs font-semibold">Upgrade to Pro</span>
+              <span className="mt-0.5 text-[11px] text-slate-900/80">
+                High limits · priority support.
+              </span>
+            </Link>
+
+            {/* Account & Settings */}
+            <Link
+              href="/account"
+              className="flex flex-col items-start rounded-2xl bg-[#020b2b] border border-slate-800/80 px-3 py-3 shadow-sm active:scale-[0.97]"
+            >
+              <div className="mb-2 flex h-7 w-7 items-center justify-center rounded-xl bg-slate-500/20 text-xs">
+                ⚙️
+              </div>
+              <span className="text-xs font-semibold">Account & Settings</span>
+              <span className="mt-0.5 text-[11px] text-slate-400">
+                Plan, usage, profile & support.
+              </span>
+            </Link>
+          </div>
         </div>
+
+        {/* FOOTER – single, tiny, no scroll */}
+        <footer className="w-full max-w-sm px-4 pb-3 pt-1 border-t border-slate-800 text-[10px] text-slate-500">
+          <div className="flex items-center justify-between">
+            <span>© {new Date().getFullYear()} JJJ AI Studio</span>
+            <div className="flex gap-2">
+              <a href="/contact" className="underline underline-offset-2">Contact</a>
+              <a href="/terms" className="underline underline-offset-2">Policies</a>
+            </div>
+          </div>
+        </footer>
       </div>
     </main>
   );
 }
+

@@ -15,6 +15,7 @@ export interface JjjUser {
   plan: JjjPlan;
   planStartedAt?: string | null; // ISO timestamp when Pro started
   planExpiresAt?: string | null; // ISO timestamp when Pro ends
+  proPlanExpiresAt?: string | null; // ISO date string
   coins: number;
   totalTokens: number;
   createdAt: admin.firestore.Timestamp;
@@ -63,6 +64,7 @@ export async function ensureGuestUser(deviceId: string): Promise<JjjUser> {
         plan: "free",
         planStartedAt: null,
         planExpiresAt: null,
+        proPlanExpiresAt: null,
         coins: 0,
         totalTokens: 0,
         createdAt: now,
@@ -82,6 +84,7 @@ export async function ensureGuestUser(deviceId: string): Promise<JjjUser> {
       plan: (data.plan as JjjPlan) ?? "free",
       planStartedAt: data.planStartedAt ?? null,
       planExpiresAt: data.planExpiresAt ?? null,
+      proPlanExpiresAt: data.proPlanExpiresAt ?? null,
       coins: data.coins ?? 0,
       totalTokens: data.totalTokens ?? 0,
       createdAt: data.createdAt ?? now,
@@ -126,6 +129,7 @@ export async function ensureGuestUser(deviceId: string): Promise<JjjUser> {
         plan: "free",
         planStartedAt: null,
         planExpiresAt: null,
+        proPlanExpiresAt: null,
         coins: 0,
         totalTokens: 0,
         createdAt: now,
@@ -164,6 +168,7 @@ export async function getUserByEmail(email: string): Promise<JjjUser | null> {
       plan: (data.plan as JjjPlan) ?? "free",
       planStartedAt: data.planStartedAt ?? null,
       planExpiresAt: data.planExpiresAt ?? null,
+      proPlanExpiresAt: data.proPlanExpiresAt ?? null,
       coins: data.coins ?? 0,
       totalTokens: data.totalTokens ?? 0,
       createdAt: data.createdAt ?? now,
@@ -208,6 +213,7 @@ export async function getUserById(userId: string): Promise<JjjUser | null> {
       plan: (data.plan as JjjPlan) ?? "free",
       planStartedAt: data.planStartedAt ?? null,
       planExpiresAt: data.planExpiresAt ?? null,
+      proPlanExpiresAt: data.proPlanExpiresAt ?? null,
       coins: data.coins ?? 0,
       totalTokens: data.totalTokens ?? 0,
       createdAt: data.createdAt ?? now,
@@ -262,5 +268,38 @@ export async function updateUser(
     }
     throw error;
   }
+}
+
+/**
+ * Get Pro plan status from user
+ */
+export function getProStatus(user: JjjUser | null) {
+  if (!user?.proPlanExpiresAt) {
+    return { isActive: false, daysLeft: 0, isExpiringSoon: false };
+  }
+
+  const now = new Date();
+  const endsAt = new Date(user.proPlanExpiresAt);
+
+  if (Number.isNaN(endsAt.getTime()) || endsAt <= now) {
+    return { isActive: false, daysLeft: 0, isExpiringSoon: false };
+  }
+
+  const diffMs = endsAt.getTime() - now.getTime();
+  const daysLeft = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+  const isExpiringSoon = daysLeft <= 3;
+
+  return { isActive: true, daysLeft, isExpiringSoon };
+}
+
+/**
+ * Activate Pro plan for 30 days
+ */
+export async function activateProFor30Days(userId: string) {
+  const now = new Date();
+  const endsAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+  await updateUser(userId, {
+    proPlanExpiresAt: endsAt.toISOString(),
+  });
 }
 

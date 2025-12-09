@@ -417,46 +417,38 @@ export default function SpeechToTextPage() {
   const busy = status === "transcribing" || status === "uploading";
 
   return (
-    <main className="flex flex-col min-h-screen bg-black text-gray-100 overflow-hidden">
-      {/* Mobile Header with Title */}
-      <div className="md:hidden px-4 pt-4 pb-2 flex-shrink-0">
-        <h1 className="text-lg font-semibold text-white">Speech to Text</h1>
-        <p className="mt-1 text-xs text-gray-400">
-          Record live speech or upload audio files — JJJ AI will convert it into clean text.
-        </p>
-      </div>
-      
-      <div className="flex flex-col md:flex-row flex-1 gap-4 md:gap-6 px-3 sm:px-4 md:px-6 pt-2 md:pt-4 overflow-hidden">
-        {/* LEFT: Controls - Hidden on mobile, visible on desktop */}
-        <section className="hidden md:flex md:w-[380px] flex-shrink-0 flex-col gap-4 rounded-2xl border border-[#1a1a1a] bg-[#050505] p-4 overflow-y-auto">
+    <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 overflow-x-hidden">
+      <div className="flex flex-col gap-4 md:grid md:grid-cols-[minmax(0,2fr)_minmax(0,1.3fr)] md:gap-6">
+        {/* LEFT: Controls - Full width on mobile, fixed width on desktop */}
+        <section className="w-full rounded-2xl border border-[#1a1a1a] bg-[#020617] p-4 sm:p-5 md:p-6 flex flex-col gap-4 md:h-auto overflow-y-auto">
           <div>
-            <h1 className="text-lg font-semibold text-white">Speech to Text</h1>
-            <p className="mt-1 text-xs text-gray-400">
+            <h1 className="text-2xl font-bold md:text-3xl text-white">Speech to Text</h1>
+            <p className="mt-1 text-sm text-slate-300 md:text-base">
               Record live speech or upload audio files — JJJ AI will convert it into clean text.
             </p>
           </div>
 
           {/* Live Transcription Button */}
-          <div className="space-y-3">
-            <label className="text-xs font-medium text-gray-300">
+          <div className="space-y-2 md:space-y-3">
+            <label className="text-xs md:text-sm font-medium text-gray-300">
               Live transcription
             </label>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-3">
               {!isLiveTranscribing ? (
                 <button
                   onClick={startLiveTranscription}
                   disabled={status === "transcribing" || status === "uploading" || isRecording}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-sky-500/50 bg-sky-500/10 px-4 py-3 text-sm font-medium text-sky-200 hover:bg-sky-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-sky-500/50 bg-sky-500/10 px-3 md:px-4 py-2 md:py-3 text-xs md:text-sm font-medium text-sky-200 hover:bg-sky-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Mic className="h-5 w-5" />
+                  <Mic className="h-4 w-4 md:h-5 md:w-5" />
                   <span>Start Live Typing</span>
                 </button>
               ) : (
                 <button
                   onClick={stopLiveTranscription}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-red-500/50 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-200 hover:bg-red-500/20 transition-colors"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-red-500/50 bg-red-500/10 px-3 md:px-4 py-2 md:py-3 text-xs md:text-sm font-medium text-red-200 hover:bg-red-500/20 transition-colors"
                 >
-                  <Square className="h-5 w-5 fill-red-500" />
+                  <Square className="h-4 w-4 md:h-5 md:w-5 fill-red-500" />
                   <span>Stop ({formatTime(recordingTime)})</span>
                 </button>
               )}
@@ -480,26 +472,26 @@ export default function SpeechToTextPage() {
           </div>
 
           {/* Record Audio Button */}
-          <div className="space-y-3">
-            <label className="text-xs font-medium text-gray-300">
+          <div className="space-y-2 md:space-y-3">
+            <label className="text-xs md:text-sm font-medium text-gray-300">
               Record audio file
             </label>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-3">
               {!isRecording ? (
                 <button
                   onClick={startRecording}
                   disabled={status === "transcribing" || status === "uploading" || isLiveTranscribing}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-emerald-500/50 bg-emerald-500/10 px-4 py-3 text-sm font-medium text-emerald-200 hover:bg-emerald-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-emerald-500/50 bg-emerald-500/10 px-3 md:px-4 py-2 md:py-3 text-xs md:text-sm font-medium text-emerald-200 hover:bg-emerald-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Mic className="h-5 w-5" />
+                  <Mic className="h-4 w-4 md:h-5 md:w-5" />
                   <span>Record Audio</span>
                 </button>
               ) : (
                 <button
                   onClick={stopRecording}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-red-500/50 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-200 hover:bg-red-500/20 transition-colors"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-red-500/50 bg-red-500/10 px-3 md:px-4 py-2 md:py-3 text-xs md:text-sm font-medium text-red-200 hover:bg-red-500/20 transition-colors"
                 >
-                  <Square className="h-5 w-5 fill-red-500" />
+                  <Square className="h-4 w-4 md:h-5 md:w-5 fill-red-500" />
                   <span>Stop ({formatTime(recordingTime)})</span>
                 </button>
               )}
@@ -524,12 +516,12 @@ export default function SpeechToTextPage() {
 
           {/* Upload File */}
           <div className="space-y-2">
-            <label className="text-xs font-medium text-gray-300">
+            <label className="text-xs md:text-sm font-medium text-gray-300">
               Upload audio file
             </label>
             <label 
               htmlFor="audio-upload"
-              className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#262626] bg-[#020617] px-3 py-3 text-xs font-medium text-gray-300 hover:bg-[#0a0a0a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#262626] bg-[#020617] px-3 py-2.5 md:py-3 text-xs md:text-sm font-medium text-gray-300 hover:bg-[#0a0a0a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full"
             >
               <Upload className="h-4 w-4" />
               <span>Choose file</span>
@@ -542,20 +534,20 @@ export default function SpeechToTextPage() {
               id="audio-upload"
               disabled={status === "transcribing" || status === "uploading" || isRecording}
             />
-            <p className="text-[11px] text-gray-500">
+            <p className="text-[10px] md:text-xs text-gray-500">
               Supported: most audio formats (mp3, m4a, wav, webm) and video
               files with speech.
             </p>
           </div>
 
           <div>
-            <label className="text-xs font-medium text-gray-300">
+            <label className="text-xs md:text-sm font-medium text-gray-300">
               Language
             </label>
             <select
               value={lang}
               onChange={(e) => setLang(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-[#262626] bg-[#020617] px-3 py-2 text-xs text-gray-100"
+              className="mt-1 w-full max-w-full rounded-xl border border-[#262626] bg-[#020617] px-3 py-2 text-xs md:text-sm text-gray-100"
             >
               <option value="auto">Auto detect</option>
               <option value="en">English</option>
@@ -582,12 +574,12 @@ export default function SpeechToTextPage() {
           </div>
         </section>
 
-        {/* RIGHT: Transcript + player - Full width on mobile, flex-1 on desktop */}
-        <section className="flex flex-1 flex-col gap-4 rounded-2xl border border-[#1a1a1a] bg-[#020617] p-4 overflow-y-auto pb-20 md:pb-4">
+        {/* RIGHT: Transcript + player - Full width on mobile, below controls */}
+        <section className="w-full rounded-2xl border border-[#1a1a1a] bg-[#020617] p-4 sm:p-5 md:p-6 flex flex-col gap-4 overflow-y-auto pb-20 md:pb-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-semibold text-white">Transcript</h2>
-              <p className="text-[11px] text-gray-400">
+              <h2 className="text-lg md:text-xl font-semibold text-white">Transcript</h2>
+              <p className="text-xs md:text-sm text-gray-400">
                 {isLiveTranscribing
                   ? "Live transcription in progress…"
                   : status === "recording"
@@ -650,17 +642,17 @@ export default function SpeechToTextPage() {
             )}
           </div>
 
-          <div className="flex items-center justify-between rounded-2xl border border-[#1f2933] bg-black/70 px-3 py-2">
-            <div className="text-[11px] text-gray-400">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-2xl border border-[#1f2933] bg-black/70 px-3 py-2">
+            <div className="text-xs md:text-sm text-gray-400">
               <div className="text-gray-200">Preview audio</div>
-              <div className="text-[10px]">
+              <div className="text-[10px] md:text-xs">
                 Listen to the original file while reading the transcript.
               </div>
             </div>
             <audio
               ref={audioRef}
               controls
-              className="w-64 text-xs [&>::-webkit-media-controls-panel]:bg-black"
+              className="w-full sm:w-64 text-xs [&>::-webkit-media-controls-panel]:bg-black"
             />
           </div>
         </section>
