@@ -7,7 +7,12 @@ function getRazorpayInstance() {
   const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
   const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
   
+  console.log("Razorpay Key ID present:", !!RAZORPAY_KEY_ID);
+  console.log("Razorpay Key ID starts with:", RAZORPAY_KEY_ID?.substring(0, 10));
+  console.log("Razorpay Key Secret present:", !!RAZORPAY_KEY_SECRET);
+  
   if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
+    console.error("Razorpay keys missing from environment variables");
     throw new Error("Razorpay keys are not configured");
   }
   
@@ -65,8 +70,20 @@ export async function POST(req: NextRequest) {
     });
   } catch (error: any) {
     console.error("Error creating Razorpay order:", error);
+    
+    // More detailed error messages
+    let errorMessage = "Failed to create payment order";
+    
+    if (error.message?.includes("Razorpay keys are not configured")) {
+      errorMessage = "Payment gateway is not configured. Please contact support.";
+    } else if (error.message?.includes("authentication") || error.message?.includes("401")) {
+      errorMessage = "Invalid payment gateway credentials. Please contact support.";
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+    
     return NextResponse.json(
-      { error: error.message || "Failed to create payment order" },
+      { error: errorMessage },
       { status: 500 }
     );
   }
