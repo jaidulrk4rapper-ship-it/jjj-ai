@@ -15,6 +15,7 @@ export default function ConditionalLayout({
   const pathname = usePathname();
   const { settings } = useSettings();
   const isAdminRoute = pathname?.startsWith("/admin");
+  const isChatRoute = pathname?.startsWith("/ai/chat");
 
   if (isAdminRoute) {
     return <>{children}</>;
@@ -42,11 +43,19 @@ export default function ConditionalLayout({
         }
       >
         <Topbar />
-        <main className="flex-1 p-1 sm:p-2 md:p-3 lg:p-4 xl:p-6 bg-black overflow-x-hidden">
-          <div className="h-full rounded-lg sm:rounded-xl border border-[#1A1A1A] bg-[#0A0A0A] p-2 sm:p-3 md:p-4 lg:p-5 xl:p-6">
+        {isChatRoute ? (
+          // Full screen for chat page - no padding or border
+          <main className="flex-1 bg-black overflow-x-hidden">
             {children}
-          </div>
-        </main>
+          </main>
+        ) : (
+          // Normal layout with padding and border for other pages
+          <main className="flex-1 p-1 sm:p-2 md:p-3 lg:p-4 xl:p-6 bg-black overflow-x-hidden">
+            <div className="h-full rounded-lg sm:rounded-xl border border-[#1A1A1A] bg-[#0A0A0A] p-2 sm:p-3 md:p-4 lg:p-5 xl:p-6">
+              {children}
+            </div>
+          </main>
+        )}
         <Footer />
       </div>
     </div>

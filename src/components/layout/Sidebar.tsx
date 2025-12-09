@@ -10,8 +10,8 @@ import {
   Image as ImageIcon,
   Home,
   Crown,
-  PanelLeftClose,
-  PanelLeftOpen,
+  X,
+  Menu,
 } from 'lucide-react';
 import { useSettings } from '@/contexts/SettingsContext';
 
@@ -97,37 +97,40 @@ export default function Sidebar() {
       {/* Mobile overlay */}
       {!isCollapsed && (
         <div 
-          className="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm md:hidden transition-opacity duration-300 ease-in-out"
           onClick={toggleSidebar}
         />
       )}
       
-      <div className={`fixed left-0 top-0 z-30 flex h-screen flex-col bg-zinc-50/90 backdrop-blur-xl dark:bg-[#050505]/90 transition-all duration-300 ease-in-out ${
-        isCollapsed 
-          ? "w-0 overflow-hidden border-r-0 -translate-x-full md:translate-x-0" 
-          : "w-64 sm:w-60 border-r border-zinc-200 dark:border-[#1A1A1A]"
-      }`}>
+      <div 
+        className={`fixed left-0 top-0 z-30 flex h-screen flex-col bg-zinc-50/90 backdrop-blur-xl dark:bg-[#050505]/90 w-64 sm:w-60 transition-transform duration-300 ease-out will-change-transform ${
+          isCollapsed 
+            ? "-translate-x-full md:translate-x-0" 
+            : "translate-x-0"
+        } ${isCollapsed ? "md:w-0 md:overflow-hidden md:border-r-0" : "border-r border-zinc-200 dark:border-[#1A1A1A]"}`}
+      >
         <div 
-          className={`flex flex-col gap-4 sm:gap-6 p-3 sm:p-4 transition-opacity duration-300 ease-in-out ${
+          className={`flex flex-col gap-4 sm:gap-6 p-3 sm:p-4 transition-opacity duration-200 ease-in-out ${
             isCollapsed ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto"
           }`}
-          style={{
-            transitionDelay: isCollapsed ? "0ms" : "50ms"
-          }}
         >
-          {/* Top brand */}
+          {/* Top brand with toggle button */}
           <div className="flex items-center justify-between border-b border-gray-200 pb-3 sm:pb-4 dark:border-[#1A1A1A]">
-            <div className="flex items-center gap-2">
-              <span className={`text-base sm:text-lg font-bold bg-gradient-to-r from-sky-400 via-blue-500 to-sky-400 bg-clip-text text-transparent ${
-                isCollapsed ? "hidden" : ""
-              }`}>
+            <div className="flex items-center gap-2 flex-1">
+              <span className="text-base sm:text-lg font-bold bg-gradient-to-r from-sky-400 via-blue-500 to-sky-400 bg-clip-text text-transparent">
                 JJJ AI
               </span>
               <span className="inline-flex h-2 w-2 rounded-full bg-sky-500 shadow-[0_0_12px_rgba(56,189,248,0.9)]" />
             </div>
-            {!isCollapsed && (
-              <span className="text-[10px] uppercase text-gray-600 dark:text-gray-400 hidden sm:inline">Studio</span>
-            )}
+            {/* Toggle button at top */}
+            <button
+              onClick={toggleSidebar}
+              className="md:hidden p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-[#111111] transition-colors text-gray-600 dark:text-gray-400"
+              aria-label={isCollapsed ? "Open sidebar" : "Close sidebar"}
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <span className="text-[10px] uppercase text-gray-600 dark:text-gray-400 hidden sm:inline md:block">Studio</span>
           </div>
 
           {/* Navigation Items */}
@@ -140,6 +143,12 @@ export default function Sidebar() {
                 <div key={item.id} className="space-y-0.5">
                   <Link
                     href={item.href}
+                    onClick={() => {
+                      // Close sidebar on mobile when clicking a link
+                      if (window.innerWidth < 768) {
+                        toggleSidebar();
+                      }
+                    }}
                     className={`group flex items-center gap-2 rounded-lg px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm transition-all duration-150 ${
                       active
                         ? 'bg-zinc-100 text-zinc-900 border border-zinc-300 shadow-[0_0_0_1px_rgba(56,189,248,0.4)] dark:bg-[#111111] dark:text-white dark:border-[#1A1A1A]'
@@ -196,25 +205,6 @@ export default function Sidebar() {
               </Link>
             </div>
           )}
-
-
-          {/* Collapse/Expand Button */}
-          <div className="border-t border-gray-200 dark:border-[#1A1A1A] pt-2 px-2">
-            <button
-              onClick={toggleSidebar}
-              className="w-full flex items-center gap-2 rounded-lg px-2 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#111111] transition-colors"
-              title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            >
-              {isCollapsed ? (
-                <PanelLeftOpen className="h-4 w-4 mx-auto" />
-              ) : (
-                <>
-                  <PanelLeftClose className="h-4 w-4 flex-shrink-0" />
-                  <span className="hidden sm:inline">Collapse</span>
-                </>
-              )}
-            </button>
-          </div>
         </div>
       </div>
 
