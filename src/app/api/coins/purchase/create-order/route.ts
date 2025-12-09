@@ -49,7 +49,10 @@ export async function POST(req: Request) {
     const coinPackage = COIN_PACKAGES[packageId];
     const amount = coinPackage.price * 100; // Convert to paise
     const currency = "INR";
-    const receipt = `jjjai_coins_${coinPackage.coins}_${user.uid}_${Date.now()}`;
+    // Receipt must be max 40 characters - using short format
+    const timestamp = Date.now().toString().slice(-10); // Last 10 digits of timestamp
+    const shortUserId = user.uid.slice(-8); // Last 8 characters of userId
+    const receipt = `jjj_c${coinPackage.coins}_${shortUserId}_${timestamp}`; // Max ~25 characters
 
     const options = {
       amount,

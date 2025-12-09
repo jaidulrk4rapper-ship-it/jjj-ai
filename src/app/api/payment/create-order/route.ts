@@ -45,7 +45,10 @@ export async function POST(req: NextRequest) {
 
     const amount = 69900; // ₹699 in paise
     const currency = "INR";
-    const receipt = `jjjai_pro_${userId}_${Date.now()}`;
+    // Receipt must be max 40 characters - using short format
+    const timestamp = Date.now().toString().slice(-10); // Last 10 digits of timestamp
+    const shortUserId = userId.slice(-8); // Last 8 characters of userId
+    const receipt = `jjj_${shortUserId}_${timestamp}`; // Max ~22 characters
 
     const options = {
       amount,
