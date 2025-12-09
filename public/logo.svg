@@ -1,0 +1,45 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1D4ED8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2563EB;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle with subtle gradient -->
+  <circle cx="512" cy="512" r="480" fill="url(#gradient)" opacity="0.08"/>
+  
+  <!-- AI Symbol - Minimal Geometric Neural Network -->
+  <g transform="translate(512, 380)">
+    <!-- Central node -->
+    <circle cx="0" cy="0" r="50" fill="#1D4ED8"/>
+    <circle cx="0" cy="0" r="38" fill="white" opacity="0.95"/>
+    <circle cx="0" cy="0" r="20" fill="#1D4ED8" opacity="0.3"/>
+    
+    <!-- Connecting nodes -->
+    <circle cx="-130" cy="-90" r="32" fill="#1D4ED8"/>
+    <circle cx="130" cy="-90" r="32" fill="#1D4ED8"/>
+    <circle cx="-130" cy="90" r="32" fill="#1D4ED8"/>
+    <circle cx="130" cy="90" r="32" fill="#1D4ED8"/>
+    
+    <!-- Connection lines -->
+    <line x1="-98" y1="-58" x2="-38" y2="-18" stroke="#1D4ED8" stroke-width="5" opacity="0.5" stroke-linecap="round"/>
+    <line x1="98" y1="-58" x2="38" y2="-18" stroke="#1D4ED8" stroke-width="5" opacity="0.5" stroke-linecap="round"/>
+    <line x1="-98" y1="58" x2="-38" y2="18" stroke="#1D4ED8" stroke-width="5" opacity="0.5" stroke-linecap="round"/>
+    <line x1="98" y1="58" x2="38" y2="18" stroke="#1D4ED8" stroke-width="5" opacity="0.5" stroke-linecap="round"/>
+    
+    <!-- Outer accent nodes -->
+    <circle cx="-190" cy="0" r="26" fill="#1D4ED8" opacity="0.6"/>
+    <circle cx="190" cy="0" r="26" fill="#1D4ED8" opacity="0.6"/>
+    <line x1="-158" y1="0" x2="-98" y2="0" stroke="#1D4ED8" stroke-width="4" opacity="0.4" stroke-linecap="round"/>
+    <line x1="158" y1="0" x2="98" y2="0" stroke="#1D4ED8" stroke-width="4" opacity="0.4" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Text: JJJ AI -->
+  <text x="512" y="680" font-family="'Segoe UI', 'Arial', sans-serif" font-size="150" font-weight="700" fill="#1D4ED8" text-anchor="middle" letter-spacing="-5">
+    JJJ
+  </text>
+  <text x="512" y="790" font-family="'Segoe UI', 'Arial', sans-serif" font-size="110" font-weight="600" fill="#1D4ED8" text-anchor="middle" opacity="0.85" letter-spacing="10">
+    AI
+  </text>
+</svg>

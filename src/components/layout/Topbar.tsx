@@ -88,8 +88,10 @@ export default function Topbar() {
   return (
     <>
       <header className="sticky top-0 z-20 flex items-center justify-between px-3 sm:px-4 md:px-6 py-2 sm:py-3 border-b border-white/10 bg-black/60 backdrop-blur-sm">
-        {/* LEFT SIDE: hamburger + title */}
+        {/* LEFT SIDE: logo + hamburger + title */}
         <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+          <img src="/logo.png" alt="JJJ AI" className="h-8 w-auto" />
+          
           <button
             type="button"
             onClick={toggleSidebar}

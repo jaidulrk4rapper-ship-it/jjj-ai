@@ -205,21 +205,19 @@ export default function HomePage() {
           </section>
 
           {/* Desktop footer */}
-          <footer className="border-t border-slate-800/70 pt-4">
-            <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 text-xs text-slate-400">
-              <span>
-                © {new Date().getFullYear()} JJJ AI Studio · Built in India 🇮🇳
-              </span>
-              <div className="flex items-center gap-4">
-                <Link href="/terms" className="hover:text-slate-200 transition-colors">
-                  Terms
-                </Link>
-                <Link href="/privacy" className="hover:text-slate-200 transition-colors">
-                  Privacy
-                </Link>
-                <Link href="/refund" className="hover:text-slate-200 transition-colors">
-                  Refund Policy
-                </Link>
+          <footer className="border-t border-slate-800 mt-12 py-6 text-sm text-slate-400">
+            <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4">
+              <span>© {new Date().getFullYear()} JJJ AI Studio</span>
+              <div className="flex gap-4">
+                <a href="/terms" className="hover:underline">
+                  Terms &amp; Conditions
+                </a>
+                <a href="/privacy" className="hover:underline">
+                  Privacy Policy
+                </a>
+                <a href="/refund" className="hover:underline">
+                  Refund &amp; Cancellation Policy
+                </a>
               </div>
             </div>
           </footer>
@@ -374,28 +372,19 @@ export default function HomePage() {
           </section>
 
           {/* Mobile footer – compact buttons */}
-          <footer className="mt-3 border-t border-slate-800 pt-3">
-            <div className="flex items-center justify-between text-[9px] text-slate-400">
+          <footer className="border-t border-slate-800 mt-12 py-6 text-sm text-slate-400">
+            <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4">
               <span>© {new Date().getFullYear()} JJJ AI Studio</span>
-              <div className="flex items-center gap-2">
-                <Link
-                  href="/terms"
-                  className="underline-offset-2 hover:text-slate-200 transition-colors"
-                >
-                  Terms
-                </Link>
-                <Link
-                  href="/privacy"
-                  className="underline-offset-2 hover:text-slate-200 transition-colors"
-                >
-                  Privacy
-                </Link>
-                <Link
-                  href="/refund"
-                  className="underline-offset-2 hover:text-slate-200 transition-colors"
-                >
-                  Refund
-                </Link>
+              <div className="flex gap-4">
+                <a href="/terms" className="hover:underline">
+                  Terms &amp; Conditions
+                </a>
+                <a href="/privacy" className="hover:underline">
+                  Privacy Policy
+                </a>
+                <a href="/refund" className="hover:underline">
+                  Refund &amp; Cancellation Policy
+                </a>
               </div>
             </div>
           </footer>

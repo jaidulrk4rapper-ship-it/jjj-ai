@@ -17,8 +17,13 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "JJJ AI",
-  description: "Next-generation AI tools for text, voice & creativity.",
+  title: "JJJ AI – Smart AI Tools for Text, Image, Voice, Coding & Productivity",
+  description: "JJJ AI – Your all-in-one Artificial Intelligence platform for text generation, image creation, voice transcription, coding assistance, video tools, and more. Fast, simple and powerful AI tools to boost your productivity. Try JJJ AI free today.",
+  icons: {
+    icon: "/favicon.png",
+    apple: "/favicon.png",
+    shortcut: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
