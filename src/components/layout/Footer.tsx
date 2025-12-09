@@ -6,6 +6,9 @@ export default function Footer() {
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4">
         <span>© {new Date().getFullYear()} JJJ AI Studio</span>
         <div className="flex gap-4">
+          <a href="/contact" className="hover:underline">
+            Contact Us
+          </a>
           <a href="/terms" className="hover:underline">
             Terms &amp; Conditions
           </a>
