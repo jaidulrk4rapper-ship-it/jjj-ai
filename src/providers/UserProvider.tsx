@@ -11,9 +11,12 @@ export interface UserState {
     userId: string;
     email?: string | null;
     plan: "free" | "pro";
+    planStartedAt?: string | null;
+    planExpiresAt?: string | null;
     coins: number;
     totalTokens: number;
   } | null;
+  daysLeft: number | null;
 }
 
 interface UserContextType extends UserState {
@@ -30,6 +33,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<UserState>({
     loading: true,
     user: null,
+    daysLeft: null,
   });
 
   const loadUser = useCallback(async (signal: AbortSignal) => {
@@ -81,9 +85,20 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         }
 
         if (!signal.aborted) {
+          // Calculate days left for Pro subscription
+          let daysLeft: number | null = null;
+          if (data.user?.plan === "pro" && data.user.planExpiresAt) {
+            const now = new Date();
+            const expiry = new Date(data.user.planExpiresAt);
+            const diffMs = expiry.getTime() - now.getTime();
+            const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+            daysLeft = diffDays > 0 ? diffDays : 0;
+          }
+          
           setState({
             loading: false,
             user: data.user,
+            daysLeft,
           });
         }
       } else {
@@ -111,9 +126,19 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
               localStorage.removeItem("jjj_email");
             }
             if (!signal.aborted) {
+              let daysLeft: number | null = null;
+              if (fallbackData.user?.plan === "pro" && fallbackData.user.planExpiresAt) {
+                const now = new Date();
+                const expiry = new Date(fallbackData.user.planExpiresAt);
+                const diffMs = expiry.getTime() - now.getTime();
+                const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+                daysLeft = diffDays > 0 ? diffDays : 0;
+              }
+              
               setState({
                 loading: false,
                 user: fallbackData.user,
+                daysLeft,
               });
             }
             return;
@@ -129,6 +154,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         setState({
           loading: false,
           user: null,
+          daysLeft: null,
         });
       }
     }
@@ -172,9 +198,20 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
           }
         }
 
+        // Calculate days left for Pro subscription
+        let daysLeft: number | null = null;
+        if (data.user?.plan === "pro" && data.user.planExpiresAt) {
+          const now = new Date();
+          const expiry = new Date(data.user.planExpiresAt);
+          const diffMs = expiry.getTime() - now.getTime();
+          const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+          daysLeft = diffDays > 0 ? diffDays : 0;
+        }
+        
         setState({
           loading: false,
           user: data.user,
+          daysLeft,
         });
       } else {
         throw new Error(data.error || "Failed to sign in");
@@ -215,9 +252,20 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
           }
         }
 
+        // Calculate days left for Pro subscription
+        let daysLeft: number | null = null;
+        if (data.user?.plan === "pro" && data.user.planExpiresAt) {
+          const now = new Date();
+          const expiry = new Date(data.user.planExpiresAt);
+          const diffMs = expiry.getTime() - now.getTime();
+          const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+          daysLeft = diffDays > 0 ? diffDays : 0;
+        }
+        
         setState({
           loading: false,
           user: data.user,
+          daysLeft,
         });
       } else {
         throw new Error(data.error || "Failed to create account");
@@ -240,6 +288,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       setState({
         loading: false,
         user: null,
+        daysLeft: null,
       });
 
       // Call logout API
@@ -286,6 +335,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       setState({
         loading: false,
         user: null,
+        daysLeft: null,
       });
 
       // Call delete account API

@@ -11,7 +11,7 @@ import LoginPrompt from "@/components/LoginPrompt";
 
 export default function AccountPage() {
   const router = useRouter();
-  const { user, loading: userLoading, logout, deleteAccount } = useJjjUser();
+  const { user, loading: userLoading, logout, deleteAccount, daysLeft } = useJjjUser();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
@@ -59,21 +59,21 @@ export default function AccountPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] p-6">
-      <div className="max-w-2xl mx-auto space-y-6">
+    <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+      <div className="max-w-2xl mx-auto space-y-6 w-full">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white mb-2">
             Account Settings
           </h1>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
             Manage your account information and preferences
           </p>
         </div>
 
         {/* Account Information */}
         <div className="bg-white dark:bg-[#111111] border border-gray-200 dark:border-[#1A1A1A] rounded-xl p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
             <User className="h-5 w-5" />
             Account Information
           </h2>
@@ -111,6 +111,59 @@ export default function AccountPage() {
               </label>
               <span className="text-sm text-gray-900 dark:text-white">{user?.coins || 0} coins</span>
             </div>
+          </div>
+        </div>
+
+        {/* Subscription Section */}
+        <div className="bg-white dark:bg-[#111111] border border-gray-200 dark:border-[#1A1A1A] rounded-xl p-6 space-y-4">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <Crown className="h-5 w-5" />
+            Subscription
+          </h2>
+          
+          <div className="space-y-4">
+            {user?.plan === "pro" ? (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Plan
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <Crown className="h-4 w-4 text-sky-500" />
+                    <span className="text-sm font-medium text-sky-600 dark:text-sky-400">Pro</span>
+                  </div>
+                </div>
+                {typeof daysLeft === "number" && daysLeft > 0 ? (
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Pro plan active – {daysLeft} day{daysLeft !== 1 ? "s" : ""} remaining.
+                  </p>
+                ) : (
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Your Pro plan has expired. You are on the free plan.
+                  </p>
+                )}
+              </>
+            ) : (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Plan
+                  </label>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Free</span>
+                </div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  You are on the free plan. Upgrade to JJJ AI Pro for higher limits.
+                </p>
+              </>
+            )}
+            
+            <button
+              onClick={() => router.push("/upgrade")}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-medium transition-colors"
+            >
+              <Crown className="h-4 w-4" />
+              <span>{user?.plan === "pro" ? "Manage / Renew Pro plan" : "Upgrade to Pro"}</span>
+            </button>
           </div>
         </div>
 

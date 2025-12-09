@@ -289,7 +289,7 @@ export default function AiChatPage() {
   const hasMessages = messages.length > 0;
 
   return (
-    <div className="flex h-[calc(100vh-80px)] md:h-[calc(100vh-80px)] flex-col bg-[#020617] relative overflow-hidden">
+    <main className="flex flex-col min-h-screen bg-[#020617] relative overflow-hidden">
       {/* Background glow effect */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -left-40 top-[-120px] h-72 w-72 rounded-full bg-sky-500/5 blur-3xl" />
@@ -297,7 +297,7 @@ export default function AiChatPage() {
       </div>
 
       {/* Top bar - Mobile & Desktop */}
-      <div className="relative z-10 flex items-center justify-between border-b border-slate-800/80 bg-[#020617]/95 backdrop-blur-sm px-3 md:px-4 py-2.5 md:py-3">
+      <div className="relative z-10 flex items-center justify-between border-b border-slate-800/80 bg-[#020617]/95 backdrop-blur-sm px-3 md:px-4 py-2.5 md:py-3 flex-shrink-0">
         {/* Mobile: Hamburger menu */}
         <div className="flex items-center gap-2 md:gap-2">
           <button className="md:hidden p-1.5 text-slate-400 hover:text-slate-200 transition-colors">
@@ -309,8 +309,8 @@ export default function AiChatPage() {
         {/* Icons - Removed refresh, user icon, and JJJ AI button as per requirements */}
       </div>
 
-      {/* Chat area */}
-      <div className="relative z-10 overflow-y-auto h-[calc(100vh-180px)]" ref={listRef}>
+      {/* Chat area - Mobile: single scroll, Desktop: fixed height */}
+      <section className="flex-1 overflow-y-auto px-3 md:px-4 pb-20 md:pb-4" ref={listRef}>
         {!hasMessages ? (
           // Empty state - Mobile & Desktop
           <div className="flex h-full flex-col items-center justify-center px-4">
@@ -324,8 +324,8 @@ export default function AiChatPage() {
               </p>
             </div>
             {/* Mobile: Suggested prompts */}
-            <div className="md:hidden w-full max-w-md px-4 pb-20">
-              <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide -mx-4 px-4">
+            <div className="md:hidden w-full max-w-md px-4 pb-20 overflow-x-hidden">
+              <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide px-4">
                 {suggestedPrompts.map((prompt, idx) => (
                   <button
                     key={idx}
@@ -359,7 +359,7 @@ export default function AiChatPage() {
                   </div>
                 )}
                 <div
-                  className={`max-w-[85%] rounded-2xl px-3 py-2.5 md:px-4 md:py-3 ${fontSizeClass} ${
+                  className={`max-w-[90%] sm:max-w-[85%] rounded-2xl px-3 py-2.5 md:px-4 md:py-3 ${fontSizeClass} ${
                     m.role === "user"
                       ? "bg-gradient-to-br from-sky-500 to-cyan-500 text-white shadow-[0_0_20px_rgba(56,189,248,0.3)]"
                       : "bg-slate-900/70 border border-slate-800/80 text-slate-100 backdrop-blur-sm"
@@ -410,10 +410,10 @@ export default function AiChatPage() {
             </div>
           </div>
         )}
-      </div>
+      </section>
 
-      {/* Input area - Mobile & Desktop */}
-      <div className="relative z-10 border-t border-slate-800/80 bg-[#020617]/95 backdrop-blur-sm px-3 md:px-4 py-2 md:py-2 safe-area-bottom">
+      {/* Input area - Mobile & Desktop - Fixed at bottom on mobile */}
+      <section className="fixed bottom-0 inset-x-0 z-10 border-t border-slate-800/80 bg-[#020617]/95 backdrop-blur-sm px-3 md:px-4 py-2 md:py-2 pb-4 md:pb-2 safe-area-bottom md:relative md:border-t md:bg-[#020617]/95">
         {/* Actions Tray */}
         <div className="relative mb-2">
           <ChatActionsTray
@@ -482,7 +482,7 @@ export default function AiChatPage() {
             JJJ AI can make mistakes. Check important info.
           </p>
         </form>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }

@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Sidebar from "@/components/layout/Sidebar";
 import Topbar from "@/components/layout/Topbar";
 import Footer from "@/components/layout/Footer";
+import MobileNav from "@/components/layout/MobileNav";
 import { useSettings } from "@/contexts/SettingsContext";
 import clsx from "clsx";
 
@@ -26,38 +27,40 @@ export default function ConditionalLayout({
   const desktopMargin = settings.sidebarCollapsed ? "0px" : "240px";
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen w-full overflow-x-hidden">
+      {/* Sidebar - handles its own mobile/desktop display */}
       <Sidebar />
+
+      {/* Main content area */}
       <div
         className={clsx(
-          "flex-1 flex flex-col transition-all duration-300 ease-in-out w-full",
+          "flex-1 flex flex-col min-w-0 w-full transition-all duration-300 ease-in-out",
           // Mobile: no margin (sidebar overlay)
           // Desktop: dynamic margin based on collapsed state
           settings.sidebarCollapsed ? "md:ml-0" : "md:ml-[240px]"
         )}
-        style={
-          {
-            // Fallback for dynamic margin (if Tailwind classes don't work)
-            "--desktop-ml": desktopMargin,
-          } as React.CSSProperties
-        }
       >
         <Topbar />
         {isChatRoute ? (
           // Full screen for chat page - no padding or border
-          <main className="flex-1 bg-black overflow-x-hidden">
+          <main className="flex-1 bg-black overflow-x-hidden min-h-0 pb-16 md:pb-0">
             {children}
           </main>
         ) : (
           // Normal layout with padding and border for other pages
-          <main className="flex-1 p-1 sm:p-2 md:p-3 lg:p-4 xl:p-6 bg-black overflow-x-hidden">
-            <div className="h-full rounded-lg sm:rounded-xl border border-[#1A1A1A] bg-[#0A0A0A] p-2 sm:p-3 md:p-4 lg:p-5 xl:p-6">
-              {children}
+          <main className="flex-1 bg-black overflow-x-hidden min-h-0 overflow-y-auto pb-16 md:pb-0">
+            <div className="p-2 sm:p-3 md:p-4 lg:p-6 min-h-full">
+              <div className="rounded-lg sm:rounded-xl border border-[#1A1A1A] bg-[#0A0A0A] p-3 sm:p-4 md:p-5 lg:p-6">
+                {children}
+              </div>
             </div>
           </main>
         )}
         <Footer />
       </div>
+      
+      {/* Mobile Navigation - only visible on mobile */}
+      <MobileNav />
     </div>
   );
 }

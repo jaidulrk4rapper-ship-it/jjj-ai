@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function HomePage() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#020617] text-slate-50">
+    <main className="relative min-h-screen overflow-x-hidden bg-[#020617] text-slate-50 w-full">
       {/* Background glow layers */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -left-40 top-[-120px] h-72 w-72 rounded-full bg-sky-500/10 blur-3xl" />
@@ -15,7 +15,8 @@ export default function HomePage() {
 
       {/* DESKTOP / LAPTOP LAYOUT (md and up) */}
       <div className="relative hidden md:block">
-        <div className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-8 py-10">
+        <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+          <div className="flex min-h-[calc(100vh-200px)] flex-col gap-8">
           {/* Top bar */}
           <header className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -63,7 +64,7 @@ export default function HomePage() {
               </p>
 
               <div className="space-y-4">
-                <h1 className="text-4xl font-semibold leading-tight text-slate-50">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight text-slate-50">
                   Your{" "}
                   <span className="bg-gradient-to-r from-sky-400 via-teal-300 to-indigo-300 bg-clip-text text-transparent">
                     entire AI workflow
@@ -224,12 +225,13 @@ export default function HomePage() {
               </div>
             </div>
           </footer>
+          </div>
         </div>
       </div>
 
       {/* MOBILE LAYOUT (below md) */}
-      <div className="relative block md:hidden">
-        <div className="flex min-h-screen flex-col bg-[#020617]/95 px-4 py-5">
+      <div className="relative block md:hidden w-full overflow-x-hidden">
+        <div className="flex min-h-screen flex-col bg-[#020617]/95 px-4 py-5 pb-20 w-full">
           {/* Mobile header */}
           <header className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2">

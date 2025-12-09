@@ -95,10 +95,18 @@ export default function TextToImagePage() {
   const mainImage = images[0];
 
   return (
-    <div className="flex h-[calc(100vh-56px)] flex-col overflow-hidden bg-black text-gray-100">
-      <div className="flex flex-1 gap-6 px-6 pb-6 pt-4">
-        {/* LEFT: Controls */}
-        <section className="flex w-[380px] flex-col gap-4 rounded-2xl border border-[#1a1a1a] bg-[#050505] p-4">
+    <main className="flex flex-col min-h-screen bg-black text-gray-100 overflow-hidden">
+      {/* Mobile Header with Title */}
+      <div className="md:hidden px-4 pt-4 pb-2 flex-shrink-0">
+        <h1 className="text-lg font-semibold text-white">Text to Image</h1>
+        <p className="mt-1 text-xs text-gray-400">
+          Type a prompt, pick a style and let JJJ AI create images for you.
+        </p>
+      </div>
+      
+      <div className="flex flex-col md:flex-row flex-1 gap-4 md:gap-6 px-3 sm:px-4 md:px-6 pt-2 md:pt-4 overflow-hidden">
+        {/* LEFT: Controls - Hidden on mobile, visible on desktop */}
+        <section className="hidden md:flex md:w-[380px] flex-shrink-0 flex-col gap-4 rounded-2xl border border-[#1a1a1a] bg-[#050505] p-4 overflow-y-auto">
           <div>
             <h1 className="text-lg font-semibold text-white">Text to Image</h1>
             <p className="mt-1 text-xs text-gray-400">
@@ -319,7 +327,7 @@ export default function TextToImagePage() {
           </div>
         </section>
       </div>
-    </div>
+    </main>
   );
 }
 

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import { upgradeUserToPro } from "@/lib/db";
 
 const RAZORPAY_WEBHOOK_SECRET = process.env.RAZORPAY_WEBHOOK_SECRET || "";
 
@@ -46,14 +45,37 @@ export async function POST(req: Request) {
         );
       }
 
-      // Calculate renewal date (30 days from now)
-      const renewalDate = new Date();
-      renewalDate.setDate(renewalDate.getDate() + 30);
+      // Get current user to check existing subscription
+      const { getUserById, updateUser } = await import("@/lib/users");
+      const user = await getUserById(userId);
 
-      // Upgrade user to Pro
-      await upgradeUserToPro(userId, renewalDate.toISOString());
+      if (!user) {
+        console.error(`User ${userId} not found`);
+        return NextResponse.json(
+          { error: "User not found" },
+          { status: 404 }
+        );
+      }
 
-      console.log(`User ${userId} upgraded to Pro. Renewal date: ${renewalDate.toISOString()}`);
+      // Determine base date for subscription extension
+      const now = new Date();
+      const currentExpiry = user.planExpiresAt ? new Date(user.planExpiresAt) : null;
+      
+      // If user already has active Pro subscription, extend from current expiry
+      // Otherwise, start from now
+      const baseDate = currentExpiry && currentExpiry > now ? currentExpiry : now;
+      const newExpiry = new Date(baseDate.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 days
+
+      // Update user with Pro plan and expiry dates
+      await updateUser(userId, {
+        plan: "pro",
+        planStartedAt: user.planStartedAt ?? now.toISOString(),
+        planExpiresAt: newExpiry.toISOString(),
+        proSince: now,
+        proSource: "razorpay",
+      });
+
+      console.log(`User ${userId} upgraded to Pro. Expires: ${newExpiry.toISOString()}`);
 
       return NextResponse.json({ success: true });
     }
@@ -64,9 +86,23 @@ export async function POST(req: Request) {
       const userId = subscription.notes?.userId;
 
       if (userId) {
-        const renewalDate = new Date();
-        renewalDate.setDate(renewalDate.getDate() + 30);
-        await upgradeUserToPro(userId, renewalDate.toISOString());
+        const { getUserById, updateUser } = await import("@/lib/users");
+        const user = await getUserById(userId);
+        
+        if (user) {
+          const now = new Date();
+          const currentExpiry = user.planExpiresAt ? new Date(user.planExpiresAt) : null;
+          const baseDate = currentExpiry && currentExpiry > now ? currentExpiry : now;
+          const newExpiry = new Date(baseDate.getTime() + 30 * 24 * 60 * 60 * 1000);
+          
+          await updateUser(userId, {
+            plan: "pro",
+            planStartedAt: user.planStartedAt ?? now.toISOString(),
+            planExpiresAt: newExpiry.toISOString(),
+            proSince: now,
+            proSource: "razorpay",
+          });
+        }
       }
     }
 

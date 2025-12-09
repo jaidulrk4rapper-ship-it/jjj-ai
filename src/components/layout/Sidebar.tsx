@@ -12,8 +12,10 @@ import {
   Crown,
   X,
   Menu,
+  CheckCircle2,
 } from 'lucide-react';
 import { useSettings } from '@/contexts/SettingsContext';
+import { useJjjUser } from '@/providers/UserProvider';
 
 interface UsageData {
   plan: 'free' | 'pro';
@@ -29,6 +31,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   const { settings, setSettings } = useSettings();
   const isCollapsed = settings.sidebarCollapsed;
+  const { user, loading: userLoading, daysLeft } = useJjjUser();
 
   const toggleSidebar = () => {
     setSettings((prev) => ({
@@ -37,6 +40,9 @@ export default function Sidebar() {
     }));
   };
   const [usageData, setUsageData] = useState<UsageData | null>(null);
+
+  // Check if user is on Pro plan
+  const isPro = user?.plan === "pro";
 
   useEffect(() => {
     // Fetch usage data
@@ -103,7 +109,7 @@ export default function Sidebar() {
       )}
       
       <div 
-        className={`fixed left-0 top-0 z-30 flex h-screen flex-col bg-zinc-50/90 backdrop-blur-xl dark:bg-[#050505]/90 w-64 sm:w-60 transition-transform duration-300 ease-out will-change-transform ${
+        className={`md:relative md:z-auto fixed left-0 top-0 z-30 flex h-screen flex-col bg-zinc-50/90 backdrop-blur-xl dark:bg-[#050505]/90 w-64 sm:w-60 md:w-60 transition-transform duration-300 ease-out will-change-transform ${
           isCollapsed 
             ? "-translate-x-full md:translate-x-0" 
             : "translate-x-0"
@@ -134,7 +140,7 @@ export default function Sidebar() {
           </div>
 
           {/* Navigation Items */}
-          <nav className="flex-1 space-y-1 overflow-y-auto">
+          <nav className="flex-1 space-y-1 overflow-y-auto overflow-x-hidden">
             {navItems.map((item) => {
               const Icon = item.icon;
               const active = isActive(item.href);
@@ -176,34 +182,76 @@ export default function Sidebar() {
             })}
           </nav>
 
-          {/* Upgrade to Pro CTA */}
-          {usageData?.plan === 'free' && !isCollapsed && (
-            <div className="mt-auto mb-2 rounded-lg border border-sky-500/30 bg-gradient-to-br from-sky-500/10 to-blue-500/10 p-2.5 sm:p-3">
-              <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
-                <Crown className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-sky-500" />
-                <span className="text-[10px] sm:text-xs font-semibold text-sky-600 dark:text-sky-400">Upgrade to Pro</span>
-              </div>
-              <p className="text-[9px] sm:text-[10px] text-gray-600 dark:text-gray-400 mb-1.5 sm:mb-2">
-                Get unlimited access to all features
-              </p>
-              <Link
-                href="/upgrade"
-                className="block w-full text-center rounded-md bg-sky-600 hover:bg-sky-700 text-white text-[10px] sm:text-xs py-1.5 px-2 transition-colors"
-              >
-                ₹699/month
-              </Link>
-            </div>
+          {/* Upgrade to Pro CTA / Pro Active Status */}
+          {!userLoading && !isCollapsed && (
+            <>
+              {!isPro ? (
+                // FREE user - Show Upgrade CTA
+                <div className="mt-auto mb-2 rounded-lg border border-sky-500/30 bg-gradient-to-br from-sky-500/10 to-blue-500/10 p-2.5 sm:p-3">
+                  <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
+                    <Crown className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-sky-500" />
+                    <span className="text-[10px] sm:text-xs font-semibold text-sky-600 dark:text-sky-400">Upgrade to Pro</span>
+                  </div>
+                  <p className="text-[9px] sm:text-[10px] text-gray-600 dark:text-gray-400 mb-1.5 sm:mb-2">
+                    Get unlimited access to all features
+                  </p>
+                  <Link
+                    href="/upgrade"
+                    className="block w-full text-center rounded-md bg-sky-600 hover:bg-sky-700 text-white text-[10px] sm:text-xs py-1.5 px-2 transition-colors"
+                  >
+                    ₹699/month
+                  </Link>
+                </div>
+              ) : (
+                // PRO user - Show Active Status
+                <div className="mt-auto mb-2 rounded-lg border border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-green-500/10 p-2.5 sm:p-3">
+                  <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
+                    <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-500" />
+                    <span className="text-[10px] sm:text-xs font-semibold text-emerald-600 dark:text-emerald-400">You're on Pro</span>
+                  </div>
+                  <p className="text-[9px] sm:text-[10px] text-gray-600 dark:text-gray-400 mb-1.5 sm:mb-2">
+                    Enjoy higher limits and priority access.
+                  </p>
+                  {typeof daysLeft === "number" && daysLeft > 0 && (
+                    <p className="text-[9px] sm:text-[10px] text-emerald-500 dark:text-emerald-400 mb-1.5 sm:mb-2">
+                      {daysLeft} day{daysLeft !== 1 ? "s" : ""} remaining
+                    </p>
+                  )}
+                  <button
+                    disabled
+                    className="block w-full text-center rounded-md bg-emerald-600/50 text-white text-[10px] sm:text-xs py-1.5 px-2 cursor-not-allowed opacity-75"
+                  >
+                    Pro plan active
+                  </button>
+                </div>
+              )}
+            </>
           )}
-          {usageData?.plan === 'free' && isCollapsed && (
-            <div className="mt-auto mb-2 flex justify-center">
-              <Link
-                href="/upgrade"
-                className="flex items-center justify-center h-8 w-8 rounded-lg border border-sky-500/30 bg-gradient-to-br from-sky-500/10 to-blue-500/10 hover:bg-sky-500/20 transition-colors"
-                title="Upgrade to Pro"
-              >
-                <Crown className="h-4 w-4 text-sky-500" />
-              </Link>
-            </div>
+          {!userLoading && isCollapsed && (
+            <>
+              {!isPro ? (
+                // FREE user - Collapsed Upgrade CTA
+                <div className="mt-auto mb-2 flex justify-center">
+                  <Link
+                    href="/upgrade"
+                    className="flex items-center justify-center h-8 w-8 rounded-lg border border-sky-500/30 bg-gradient-to-br from-sky-500/10 to-blue-500/10 hover:bg-sky-500/20 transition-colors"
+                    title="Upgrade to Pro"
+                  >
+                    <Crown className="h-4 w-4 text-sky-500" />
+                  </Link>
+                </div>
+              ) : (
+                // PRO user - Collapsed Active Status
+                <div className="mt-auto mb-2 flex justify-center">
+                  <div
+                    className="flex items-center justify-center h-8 w-8 rounded-lg border border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-green-500/10"
+                    title="Pro plan active"
+                  >
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

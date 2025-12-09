@@ -5,18 +5,18 @@ export const metadata = {
 
 export default function PrivacyPage() {
   return (
-    <main className="mx-auto max-w-3xl px-6 py-12 text-slate-200">
-      <h1 className="text-3xl font-bold mb-4">Privacy Policy</h1>
-      <p className="mb-2">Last updated: 9/12/2025</p>
+    <main className="mx-auto w-full max-w-3xl px-4 py-8 text-slate-200 leading-relaxed overflow-x-hidden">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-4">Privacy Policy</h1>
+      <p className="mb-2 text-sm sm:text-base">Last updated: 9/12/2025</p>
 
-      <p className="mb-4">
+      <p className="mb-4 text-sm sm:text-base">
         This Privacy Policy describes how JJJ AI Studio ("we", "us", "our")
         collects, uses and protects your information when you use our AI tools
         and website.
       </p>
 
-      <h2 className="text-xl font-semibold mt-6 mb-2">1. Information We Collect</h2>
-      <p className="mb-2">
+      <h2 className="text-lg sm:text-xl font-semibold mt-6 mb-2">1. Information We Collect</h2>
+      <p className="mb-2 text-sm sm:text-base">
         <strong>Account details:</strong> name, email address and basic profile
         information.
       </p>
@@ -65,8 +65,8 @@ export default function PrivacyPage() {
         your account or by emailing support.
       </p>
 
-      <h2 className="text-xl font-semibold mt-6 mb-2">6. Contact</h2>
-      <p>
+      <h2 className="text-lg sm:text-xl font-semibold mt-6 mb-2">6. Contact</h2>
+      <p className="text-sm sm:text-base">
         Email: feedback@dailybillkaro.org
         <br />
         Location: Assam, India

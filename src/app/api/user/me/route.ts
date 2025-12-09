@@ -20,10 +20,23 @@ export async function GET(req: NextRequest) {
 
     // If userId is provided (from header or cookie), try to get existing user
     if (userId) {
-      const user = await getUserById(userId);
+      let user = await getUserById(userId);
       
-      // If user exists, return it
+      // If user exists, normalize plan for expired subscriptions
       if (user) {
+        // Check if Pro subscription has expired
+        if (user.plan === "pro" && user.planExpiresAt) {
+          const now = new Date();
+          const expiry = new Date(user.planExpiresAt);
+          if (expiry <= now) {
+            // Subscription expired - downgrade to free
+            const { updateUser } = await import("@/lib/users");
+            user = await updateUser(userId, {
+              plan: "free",
+            });
+          }
+        }
+        
         // Set cookie if not already set (for future requests)
         const response = NextResponse.json({
           ok: true,
@@ -31,6 +44,8 @@ export async function GET(req: NextRequest) {
             userId: user.userId,
             email: user.email,
             plan: user.plan,
+            planStartedAt: user.planStartedAt,
+            planExpiresAt: user.planExpiresAt,
             coins: user.coins,
             totalTokens: user.totalTokens,
           },
@@ -62,6 +77,8 @@ export async function GET(req: NextRequest) {
           userId: guestUser.userId,
           email: guestUser.email,
           plan: guestUser.plan,
+          planStartedAt: guestUser.planStartedAt,
+          planExpiresAt: guestUser.planExpiresAt,
           coins: guestUser.coins,
           totalTokens: guestUser.totalTokens,
         },
@@ -116,6 +133,8 @@ export async function GET(req: NextRequest) {
           userId: guestUser.userId,
           email: guestUser.email,
           plan: guestUser.plan,
+          planStartedAt: guestUser.planStartedAt,
+          planExpiresAt: guestUser.planExpiresAt,
           coins: guestUser.coins,
           totalTokens: guestUser.totalTokens,
         },

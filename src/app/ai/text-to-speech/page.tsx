@@ -276,17 +276,19 @@ export default function TextToSpeechPage() {
   const approxTokens = Math.max(1, Math.round(length / 4));
 
   return (
-    <div className="h-[calc(100vh-80px)] flex flex-col">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-semibold text-white">Text to Speech</h1>
-        <p className="text-sm text-gray-400">
-          Convert your text into natural speech using OpenAI TTS.
-        </p>
-      </div>
+    <main className="flex flex-col min-h-screen bg-black text-gray-100">
+      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 flex-1 flex flex-col overflow-hidden">
+        {/* Header */}
+        <div className="mb-4 flex-shrink-0">
+          <h1 className="text-2xl font-semibold text-white">Text to Speech</h1>
+          <p className="text-sm text-gray-400">
+            Convert your text into natural speech using OpenAI TTS.
+          </p>
+        </div>
 
-      {/* Main card */}
-      <div className="mt-4 flex-1 rounded-2xl border border-[#1A1A1A] bg-black/70 shadow-[0_0_40px_rgba(0,0,0,0.9)] backdrop-blur-xl p-5 grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-y-auto">
+        {/* Main card - Scrollable on mobile */}
+        <div className="flex-1 overflow-y-auto pb-20 md:pb-4">
+          <div className="rounded-2xl border border-[#1A1A1A] bg-black/70 shadow-[0_0_40px_rgba(0,0,0,0.9)] backdrop-blur-xl p-4 sm:p-5 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Left column – Text input */}
         <div className="flex flex-col gap-4">
           <label className="text-sm font-medium text-gray-300">Text</label>
@@ -519,6 +521,7 @@ export default function TextToSpeechPage() {
             </div>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

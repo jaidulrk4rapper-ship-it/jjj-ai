@@ -25,25 +25,25 @@ export default function UpgradeSuccessPage() {
   }, [router]);
 
   return (
-    <div className="max-w-2xl mx-auto py-12 px-6 text-center">
-      <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-500/20 mb-6">
-        <CheckCircle className="h-10 w-10 text-green-500" />
+    <div className="max-w-2xl mx-auto py-8 sm:py-12 px-4 sm:px-6 text-center overflow-x-hidden">
+      <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-green-500/20 mb-4 sm:mb-6">
+        <CheckCircle className="h-8 w-8 sm:h-10 sm:w-10 text-green-500" />
       </div>
 
-      <h1 className="text-3xl font-bold text-white mb-3">
+      <h1 className="text-2xl sm:text-3xl font-bold text-white mb-3">
         Welcome to JJJ AI Pro!
       </h1>
 
-      <p className="text-gray-400 text-lg mb-8">
+      <p className="text-gray-400 text-sm sm:text-base md:text-lg mb-6 sm:mb-8">
         Your payment was successful. You now have access to all Pro features.
       </p>
 
       <div className="bg-[#0A0A0A] border border-[#1A1A1A] rounded-xl p-6 mb-8">
         <div className="flex items-center justify-center gap-2 mb-4">
-          <Crown className="h-6 w-6 text-sky-400" />
-          <span className="text-xl font-semibold text-white">Pro Features Unlocked</span>
+          <Crown className="h-5 w-5 sm:h-6 sm:w-6 text-sky-400" />
+          <span className="text-lg sm:text-xl font-semibold text-white">Pro Features Unlocked</span>
         </div>
-        <ul className="text-left space-y-2 text-gray-300">
+        <ul className="text-left space-y-2 text-sm sm:text-base text-gray-300">
           <li className="flex items-center gap-2">
             <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
             <span>1,000+ AI Chat messages per month</span>
@@ -67,16 +67,16 @@ export default function UpgradeSuccessPage() {
         </ul>
       </div>
 
-      <div className="flex gap-4 justify-center">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
         <Link
           href="/"
-          className="px-6 py-3 bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-lg transition-colors"
+          className="px-4 sm:px-6 py-2.5 sm:py-3 bg-sky-600 hover:bg-sky-700 text-white text-sm sm:text-base font-semibold rounded-lg transition-colors w-full sm:w-auto"
         >
           Start Using Pro
         </Link>
         <Link
           href="/ai/chat"
-          className="px-6 py-3 border border-[#1A1A1A] hover:bg-[#111111] text-gray-300 font-semibold rounded-lg transition-colors"
+          className="px-4 sm:px-6 py-2.5 sm:py-3 border border-[#1A1A1A] hover:bg-[#111111] text-gray-300 text-sm sm:text-base font-semibold rounded-lg transition-colors w-full sm:w-auto"
         >
           Try AI Chat
         </Link>

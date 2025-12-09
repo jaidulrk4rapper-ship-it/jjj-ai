@@ -417,10 +417,18 @@ export default function SpeechToTextPage() {
   const busy = status === "transcribing" || status === "uploading";
 
   return (
-    <div className="flex h-[calc(100vh-56px)] flex-col overflow-hidden bg-black text-gray-100">
-      <div className="flex flex-1 gap-6 px-6 pb-6 pt-4">
-        {/* LEFT: Controls */}
-        <section className="flex w-[380px] flex-col gap-4 rounded-2xl border border-[#1a1a1a] bg-[#050505] p-4">
+    <main className="flex flex-col min-h-screen bg-black text-gray-100 overflow-hidden">
+      {/* Mobile Header with Title */}
+      <div className="md:hidden px-4 pt-4 pb-2 flex-shrink-0">
+        <h1 className="text-lg font-semibold text-white">Speech to Text</h1>
+        <p className="mt-1 text-xs text-gray-400">
+          Record live speech or upload audio files — JJJ AI will convert it into clean text.
+        </p>
+      </div>
+      
+      <div className="flex flex-col md:flex-row flex-1 gap-4 md:gap-6 px-3 sm:px-4 md:px-6 pt-2 md:pt-4 overflow-hidden">
+        {/* LEFT: Controls - Hidden on mobile, visible on desktop */}
+        <section className="hidden md:flex md:w-[380px] flex-shrink-0 flex-col gap-4 rounded-2xl border border-[#1a1a1a] bg-[#050505] p-4 overflow-y-auto">
           <div>
             <h1 className="text-lg font-semibold text-white">Speech to Text</h1>
             <p className="mt-1 text-xs text-gray-400">
@@ -574,8 +582,8 @@ export default function SpeechToTextPage() {
           </div>
         </section>
 
-        {/* RIGHT: Transcript + player */}
-        <section className="flex flex-1 flex-col gap-4 rounded-2xl border border-[#1a1a1a] bg-[#020617] p-4">
+        {/* RIGHT: Transcript + player - Full width on mobile, flex-1 on desktop */}
+        <section className="flex flex-1 flex-col gap-4 rounded-2xl border border-[#1a1a1a] bg-[#020617] p-4 overflow-y-auto pb-20 md:pb-4">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-sm font-semibold text-white">Transcript</h2>
@@ -657,6 +665,6 @@ export default function SpeechToTextPage() {
           </div>
         </section>
       </div>
-    </div>
+    </main>
   );
 }

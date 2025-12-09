@@ -34,11 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} antialiased min-h-screen`}
-        style={{
-          backgroundColor: 'var(--bg-color, #000000)',
-          color: 'var(--fg-color, #e5e7eb)',
-        }}
+        className={`${inter.variable} ${jetbrainsMono.variable} antialiased min-h-screen bg-[#020617] text-slate-50 overflow-x-hidden`}
       >
         <UserProvider>
           <SettingsProvider>

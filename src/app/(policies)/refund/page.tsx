@@ -5,19 +5,19 @@ export const metadata = {
 
 export default function RefundPage() {
   return (
-    <main className="mx-auto max-w-3xl px-6 py-12 text-slate-200">
-      <h1 className="text-3xl font-bold mb-4">
+    <main className="mx-auto w-full max-w-3xl px-4 py-8 text-slate-200 leading-relaxed overflow-x-hidden">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-4">
         Refund &amp; Cancellation Policy
       </h1>
-      <p className="mb-2">Last updated: 9/12/2025</p>
+      <p className="mb-2 text-sm sm:text-base">Last updated: 9/12/2025</p>
 
-      <p className="mb-4">
+      <p className="mb-4 text-sm sm:text-base">
         This Refund &amp; Cancellation Policy applies to subscriptions
         purchased for JJJ AI Studio ("Service").
       </p>
 
-      <h2 className="text-xl font-semibold mt-6 mb-2">1. Subscription Billing</h2>
-      <p className="mb-4">
+      <h2 className="text-lg sm:text-xl font-semibold mt-6 mb-2">1. Subscription Billing</h2>
+      <p className="mb-4 text-sm sm:text-base">
         JJJ AI Pro and other paid plans are billed in advance on a recurring
         basis (monthly, yearly or as otherwise specified on the pricing page).
         Your subscription will automatically renew until cancelled.
@@ -50,10 +50,10 @@ export default function RefundPage() {
         date.
       </p>
 
-      <h2 className="text-xl font-semibold mt-6 mb-2">
+      <h2 className="text-lg sm:text-xl font-semibold mt-6 mb-2">
         5. Contact for Billing Support
       </h2>
-      <p>
+      <p className="text-sm sm:text-base">
         Email: feedback@dailybillkaro.org
         <br />
         Phone / WhatsApp: +91-6000375343

@@ -5,26 +5,26 @@ export const metadata = {
 
 export default function TermsPage() {
   return (
-    <main className="mx-auto max-w-3xl px-6 py-12 text-slate-200">
-      <h1 className="text-3xl font-bold mb-4">Terms &amp; Conditions</h1>
-      <p className="mb-2">Last updated: 9/12/2025</p>
+    <main className="mx-auto w-full max-w-3xl px-4 py-8 text-slate-200 leading-relaxed overflow-x-hidden">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-4">Terms &amp; Conditions</h1>
+      <p className="mb-2 text-sm sm:text-base">Last updated: 9/12/2025</p>
 
-      <p className="mb-4">
+      <p className="mb-4 text-sm sm:text-base">
         JJJ AI Studio ("we", "us", "our") is an online AI tools platform
         operated by Jahidul Islam Sk. By accessing or using JJJ AI Studio, you
         ("you", "user") agree to be bound by these Terms and our Privacy Policy.
       </p>
 
-      <h2 className="text-xl font-semibold mt-6 mb-2">1. Use of Service</h2>
-      <p className="mb-4">
+      <h2 className="text-lg sm:text-xl font-semibold mt-6 mb-2">1. Use of Service</h2>
+      <p className="mb-4 text-sm sm:text-base">
         You may use the platform only for lawful purposes. You are responsible
         for the prompts and content you generate. You agree not to use the
         Service to generate illegal, harmful, abusive or hateful content or to
         violate any applicable law or regulation.
       </p>
 
-      <h2 className="text-xl font-semibold mt-6 mb-2">2. Accounts &amp; Subscriptions</h2>
-      <p className="mb-4">
+      <h2 className="text-lg sm:text-xl font-semibold mt-6 mb-2">2. Accounts &amp; Subscriptions</h2>
+      <p className="mb-4 text-sm sm:text-base">
         You are responsible for maintaining the confidentiality of your account
         and for all activities under your login. Paid plans such as JJJ AI Pro
         are billed in advance on a recurring basis (monthly or yearly). Access
@@ -62,8 +62,8 @@ export default function TermsPage() {
         changes means you accept the updated Terms.
       </p>
 
-      <h2 className="text-xl font-semibold mt-6 mb-2">7. Contact</h2>
-      <p>
+      <h2 className="text-lg sm:text-xl font-semibold mt-6 mb-2">7. Contact</h2>
+      <p className="text-sm sm:text-base">
         JJJ AI Studio – Daily Bill Karo Team
         <br />
         Email: feedback@dailybillkaro.org

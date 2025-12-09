@@ -13,6 +13,8 @@ export interface JjjUser {
   passwordHash?: string | null; // Hashed password
   isGuest: boolean;
   plan: JjjPlan;
+  planStartedAt?: string | null; // ISO timestamp when Pro started
+  planExpiresAt?: string | null; // ISO timestamp when Pro ends
   coins: number;
   totalTokens: number;
   createdAt: admin.firestore.Timestamp;
@@ -59,6 +61,8 @@ export async function ensureGuestUser(deviceId: string): Promise<JjjUser> {
         email: null,
         isGuest: true,
         plan: "free",
+        planStartedAt: null,
+        planExpiresAt: null,
         coins: 0,
         totalTokens: 0,
         createdAt: now,
@@ -76,6 +80,8 @@ export async function ensureGuestUser(deviceId: string): Promise<JjjUser> {
       passwordHash: data.passwordHash ?? null,
       isGuest: data.isGuest ?? (data.email ? false : true),
       plan: (data.plan as JjjPlan) ?? "free",
+      planStartedAt: data.planStartedAt ?? null,
+      planExpiresAt: data.planExpiresAt ?? null,
       coins: data.coins ?? 0,
       totalTokens: data.totalTokens ?? 0,
       createdAt: data.createdAt ?? now,
@@ -118,6 +124,8 @@ export async function ensureGuestUser(deviceId: string): Promise<JjjUser> {
         email: null,
         isGuest: true,
         plan: "free",
+        planStartedAt: null,
+        planExpiresAt: null,
         coins: 0,
         totalTokens: 0,
         createdAt: now,
@@ -154,6 +162,8 @@ export async function getUserByEmail(email: string): Promise<JjjUser | null> {
       passwordHash: data.passwordHash ?? null,
       isGuest: data.isGuest ?? (data.email ? false : true),
       plan: (data.plan as JjjPlan) ?? "free",
+      planStartedAt: data.planStartedAt ?? null,
+      planExpiresAt: data.planExpiresAt ?? null,
       coins: data.coins ?? 0,
       totalTokens: data.totalTokens ?? 0,
       createdAt: data.createdAt ?? now,
@@ -196,6 +206,8 @@ export async function getUserById(userId: string): Promise<JjjUser | null> {
       passwordHash: data.passwordHash ?? null,
       isGuest: data.isGuest ?? (data.email ? false : true),
       plan: (data.plan as JjjPlan) ?? "free",
+      planStartedAt: data.planStartedAt ?? null,
+      planExpiresAt: data.planExpiresAt ?? null,
       coins: data.coins ?? 0,
       totalTokens: data.totalTokens ?? 0,
       createdAt: data.createdAt ?? now,

@@ -49,19 +49,33 @@ export async function POST(req: Request) {
   // Sirf successful / captured payments pe upgrade
   if (event === "payment.captured") {
     try {
-      const { db } = getFirebaseAdmin();
-      const ref = db.collection("jjjaiUsers").doc(userId);
+      const { getUserById, updateUser } = await import("@/lib/users");
+      const user = await getUserById(userId);
+
+      if (!user) {
+        console.error(`User ${userId} not found`);
+        return NextResponse.json({ received: true, error: "User not found" });
+      }
+
+      // Determine base date for subscription extension
+      const now = new Date();
+      const currentExpiry = user.planExpiresAt ? new Date(user.planExpiresAt) : null;
       
-      await ref.set(
-        {
-          plan: "pro",
-          proSince: new Date(),
-          proSource: "JJJ AI",
-        },
-        { merge: true }
-      );
+      // If user already has active Pro subscription, extend from current expiry
+      // Otherwise, start from now
+      const baseDate = currentExpiry && currentExpiry > now ? currentExpiry : now;
+      const newExpiry = new Date(baseDate.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 days
+
+      // Update user with Pro plan and expiry dates
+      await updateUser(userId, {
+        plan: "pro",
+        planStartedAt: user.planStartedAt ?? now.toISOString(),
+        planExpiresAt: newExpiry.toISOString(),
+        proSince: now,
+        proSource: "JJJ AI",
+      });
       
-      console.log("JJJ AI Pro activated for user:", userId);
+      console.log("JJJ AI Pro activated for user:", userId, "Expires:", newExpiry.toISOString());
     } catch (error) {
       console.error("Failed to upgrade user to Pro:", error);
       // Still return success to Razorpay to avoid retries
