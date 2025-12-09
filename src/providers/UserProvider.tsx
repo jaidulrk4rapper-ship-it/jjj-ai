@@ -17,7 +17,7 @@ export interface UserState {
 }
 
 interface UserContextType extends UserState {
-  signInWithEmail: (email: string, password?: string, isGoogleAuth?: boolean) => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
   signUpWithEmail: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   deleteAccount: () => Promise<void>;
@@ -142,17 +142,18 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     };
   }, [loadUser]);
 
-  const signInWithEmail = useCallback(async (email: string, password?: string, isGoogleAuth?: boolean) => {
+  const signInWithEmail = useCallback(async (email: string, password: string) => {
     try {
       const userId = typeof window !== "undefined" ? localStorage.getItem("jjj_user_id") : null;
       
-      const response = await fetch("/api/auth/signin", {
+      const response = await fetch("/api/auth/deepseek", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           ...(userId ? { "x-user-id": userId } : {}),
         },
-        body: JSON.stringify({ email, password, isGoogleAuth }),
+        body: JSON.stringify({ email, password, action: "login" }),
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -188,13 +189,14 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     try {
       const userId = typeof window !== "undefined" ? localStorage.getItem("jjj_user_id") : null;
       
-      const response = await fetch("/api/auth/signup", {
+      const response = await fetch("/api/auth/deepseek", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           ...(userId ? { "x-user-id": userId } : {}),
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, action: "signup" }),
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -324,7 +326,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const refreshUser = useCallback(async () => {
-    await loadUser();
+    const abortController = new AbortController();
+    await loadUser(abortController.signal);
   }, [loadUser]);
 
   return (

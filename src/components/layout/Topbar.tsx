@@ -5,22 +5,18 @@ import { usePathname, useRouter } from "next/navigation";
 import { Menu, ChevronDown, ChevronUp, Crown, Settings, LogOut, Trash2, X, UserCircle } from "lucide-react";
 import { useJjjUser } from "@/providers/UserProvider";
 import { useEffect, useRef, useState } from "react";
+import DeepSeekLogin from "@/components/DeepSeekLogin";
 
 export default function Topbar() {
   const { settings, setSettings } = useSettings();
   const pathname = usePathname();
   const router = useRouter();
-  const { user, loading: userLoading, signInWithEmail, signUpWithEmail, logout, deleteAccount } = useJjjUser();
+  const { user, loading: userLoading, logout, deleteAccount } = useJjjUser();
   
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const [showSignInModal, setShowSignInModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [emailInput, setEmailInput] = useState("");
-  const [passwordInput, setPasswordInput] = useState("");
-  const [signInError, setSignInError] = useState<string | null>(null);
-  const [signInLoading, setSignInLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   const toggleSidebar = () => {
@@ -59,45 +55,6 @@ export default function Topbar() {
   const getInitials = (email: string | null | undefined) => {
     if (!email) return "G";
     return email.charAt(0).toUpperCase();
-  };
-
-  const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSignInError(null);
-
-    if (!emailInput.trim() || !emailInput.includes("@")) {
-      setSignInError("Please enter a valid email address");
-      return;
-    }
-
-    if (isSignUp && !passwordInput.trim()) {
-      setSignInError("Please enter a password");
-      return;
-    }
-
-    setSignInLoading(true);
-    try {
-      if (isSignUp) {
-        if (!passwordInput.trim()) {
-          setSignInError("Please enter a password");
-          setSignInLoading(false);
-          return;
-        }
-        await signUpWithEmail(emailInput.trim(), passwordInput);
-        setShowSignInModal(false);
-        setEmailInput("");
-        setPasswordInput("");
-      } else {
-        await signInWithEmail(emailInput.trim(), passwordInput || undefined);
-        setShowSignInModal(false);
-        setEmailInput("");
-        setPasswordInput("");
-      }
-    } catch (error: any) {
-      setSignInError(error?.message || (isSignUp ? "Failed to sign up. Please try again." : "Failed to sign in. Please try again."));
-    } finally {
-      setSignInLoading(false);
-    }
   };
 
   const handleLogout = async () => {
@@ -235,13 +192,10 @@ export default function Topbar() {
             </div>
           ) : (
             <button
-              onClick={() => {
-                setShowSignInModal(true);
-                setIsSignUp(false);
-              }}
-              className="group relative flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-sky-500/50 text-white/80 hover:text-sky-400 h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 transition-all duration-200 hover:shadow-[0_0_12px_rgba(56,189,248,0.4)]"
-              title="Sign in"
-              aria-label="Sign in"
+              onClick={() => setShowLoginModal(true)}
+              className="group relative flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-blue-500/50 text-white/80 hover:text-blue-400 h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 transition-all duration-200 hover:shadow-[0_0_12px_rgba(59,130,246,0.4)]"
+              title="Log in"
+              aria-label="Log in"
             >
               <UserCircle className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-200 group-hover:scale-110" strokeWidth={1.5} />
             </button>
@@ -249,84 +203,9 @@ export default function Topbar() {
         </div>
       </header>
 
-      {/* Sign In Modal */}
-      {showSignInModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="bg-white dark:bg-[#111111] rounded-xl border border-gray-200 dark:border-[#1A1A1A] p-6 w-full max-w-sm mx-4">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {isSignUp ? "Sign up" : "Sign in"}
-              </h2>
-              <button
-                onClick={() => {
-                  setShowSignInModal(false);
-                  setEmailInput("");
-                  setPasswordInput("");
-                  setSignInError(null);
-                }}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <form onSubmit={handleSignIn} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Email address
-                </label>
-                <input
-                  type="email"
-                  value={emailInput}
-                  onChange={(e) => {
-                    setEmailInput(e.target.value);
-                    setSignInError(null);
-                  }}
-                  placeholder="you@example.com"
-                  className="w-full rounded-md bg-white dark:bg-[#050505] border border-gray-300 dark:border-[#1A1A1A] px-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-                  required
-                />
-              </div>
-              {isSignUp && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    value={passwordInput}
-                    onChange={(e) => {
-                      setPasswordInput(e.target.value);
-                      setSignInError(null);
-                    }}
-                    placeholder="Enter password"
-                    className="w-full rounded-md bg-white dark:bg-[#050505] border border-gray-300 dark:border-[#1A1A1A] px-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-                    required={isSignUp}
-                  />
-                </div>
-              )}
-              {signInError && <p className="text-xs text-red-500">{signInError}</p>}
-              <button
-                type="submit"
-                disabled={signInLoading}
-                className="w-full rounded-md bg-sky-600 hover:bg-sky-700 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm py-2 px-4 transition-colors"
-              >
-                {signInLoading ? (isSignUp ? "Signing up..." : "Signing in...") : isSignUp ? "Sign up" : "Sign in"}
-              </button>
-              <div className="text-center">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsSignUp(!isSignUp);
-                    setSignInError(null);
-                  }}
-                  className="text-xs text-sky-500 hover:text-sky-600"
-                >
-                  {isSignUp ? "Already have an account? Sign in" : "Don't have an account? Sign up"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+      {/* DeepSeek Login Modal */}
+      {showLoginModal && (
+        <DeepSeekLogin onClose={() => setShowLoginModal(false)} defaultAction="login" />
       )}
 
       {/* Delete Account Confirmation Modal */}
