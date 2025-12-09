@@ -130,53 +130,53 @@ export default function Topbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-20 flex items-center justify-between px-4 md:px-6 py-3 border-b border-white/10 bg-black/60 backdrop-blur-sm">
+      <header className="sticky top-0 z-20 flex items-center justify-between px-3 sm:px-4 md:px-6 py-2 sm:py-3 border-b border-white/10 bg-black/60 backdrop-blur-sm">
         {/* LEFT SIDE: hamburger + title */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
           <button
             type="button"
             onClick={toggleSidebar}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/5 text-white/80 hover:bg-white/10 transition-colors"
+            className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-white/5 text-white/80 hover:bg-white/10 transition-colors flex-shrink-0"
             aria-label={settings.sidebarCollapsed ? "Show sidebar" : "Hide sidebar"}
             title={settings.sidebarCollapsed ? "Show sidebar" : "Hide sidebar"}
           >
-            <Menu className="h-5 w-5" />
+            <Menu className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
 
-          <div className="flex flex-col">
-            <span className="text-sm font-semibold text-white">{pageTitle}</span>
-            <span className="text-[11px] text-white/40 hidden sm:inline">
+          <div className="flex flex-col min-w-0">
+            <span className="text-xs sm:text-sm font-semibold text-white truncate">{pageTitle}</span>
+            <span className="text-[10px] sm:text-[11px] text-white/40 hidden sm:inline">
               Welcome back, boss.
             </span>
           </div>
         </div>
 
         {/* RIGHT SIDE: User menu */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           {userLoading ? (
             <div className="h-8 w-8 rounded-full bg-white/10 animate-pulse" />
           ) : user?.email ? (
             <div className="relative" ref={userMenuRef}>
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-2 rounded-full bg-white/5 hover:bg-white/10 px-2 py-1.5 transition-colors"
+                className="flex items-center gap-1.5 sm:gap-2 rounded-full bg-white/5 hover:bg-white/10 px-1.5 sm:px-2 py-1.5 transition-colors"
               >
-                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center text-xs font-semibold text-white">
+                <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center text-[10px] sm:text-xs font-semibold text-white">
                   {getInitials(user.email)}
                 </div>
-                <span className="hidden sm:inline text-sm text-white/80 max-w-[120px] truncate">
+                <span className="hidden md:inline text-xs sm:text-sm text-white/80 max-w-[100px] sm:max-w-[120px] truncate">
                   {user.email.split("@")[0]}
                 </span>
                 {showUserMenu ? (
-                  <ChevronUp className="h-4 w-4 text-white/60 hidden sm:inline" />
+                  <ChevronUp className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white/60 hidden md:inline" />
                 ) : (
-                  <ChevronDown className="h-4 w-4 text-white/60 hidden sm:inline" />
+                  <ChevronDown className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white/60 hidden md:inline" />
                 )}
               </button>
 
               {/* User Menu Dropdown */}
               {showUserMenu && (
-                <div className="absolute right-0 top-full mt-2 w-56 bg-[#111111] border border-[#1A1A1A] rounded-lg shadow-xl overflow-hidden z-50">
+                <div className="absolute right-0 top-full mt-2 w-52 sm:w-56 bg-[#111111] border border-[#1A1A1A] rounded-lg shadow-xl overflow-hidden z-50">
                   <div className="px-4 py-3 border-b border-[#1A1A1A]">
                     <div className="text-sm font-medium text-white truncate">{user.email}</div>
                     <div className="text-xs text-gray-400 mt-0.5">
@@ -239,11 +239,11 @@ export default function Topbar() {
                 setShowSignInModal(true);
                 setIsSignUp(false);
               }}
-              className="group relative flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-sky-500/50 text-white/80 hover:text-sky-400 h-10 w-10 transition-all duration-200 hover:shadow-[0_0_12px_rgba(56,189,248,0.4)]"
+              className="group relative flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-sky-500/50 text-white/80 hover:text-sky-400 h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 transition-all duration-200 hover:shadow-[0_0_12px_rgba(56,189,248,0.4)]"
               title="Sign in"
               aria-label="Sign in"
             >
-              <UserCircle className="h-5 w-5 transition-transform duration-200 group-hover:scale-110" strokeWidth={1.5} />
+              <UserCircle className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-200 group-hover:scale-110" strokeWidth={1.5} />
             </button>
           )}
         </div>

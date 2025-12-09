@@ -1,46 +1,39 @@
 export default function TermsPage() {
   return (
-    <div className="p-8 max-w-3xl mx-auto text-white">
-      <h1 className="text-3xl font-bold mb-6">Terms & Conditions</h1>
-
-      <p>Welcome to JJJ AI. By using our website and AI tools, you agree to the following terms.</p>
-
-      <h2 className="text-xl font-semibold mt-6">1. Service Description</h2>
-      <p>
-        JJJ AI provides AI-powered tools including chat, text-to-speech, speech-to-text, 
-        AI image generation, and more. These features may change or update over time.
+    <main className="mx-auto max-w-3xl px-4 py-10 text-slate-100">
+      <h1 className="text-3xl font-semibold mb-6">Terms &amp; Conditions</h1>
+      <p className="mb-4 text-sm text-slate-300">
+        JJJ AI Studio ("we", "us", "our") is an online AI tools platform operated by
+        Jahidul Islam Sk. By accessing or using JJJ AI Studio, you agree to these Terms
+        and our Privacy Policy.
       </p>
 
-      <h2 className="text-xl font-semibold mt-6">2. User Accounts</h2>
-      <p>
-        You must create an account to access premium features. You are responsible for 
-        maintaining the confidentiality of your login credentials.
+      <h2 className="text-xl font-semibold mt-6 mb-2">Use of Service</h2>
+      <p className="text-sm text-slate-300 mb-2">
+        You agree to use the platform only for lawful purposes. You are responsible for
+        the content you generate using AI tools on this website.
       </p>
 
-      <h2 className="text-xl font-semibold mt-6">3. Payments & Subscription</h2>
-      <p>
-        JJJ AI Premium is billed monthly or yearly. All payments are processed securely 
-        through Razorpay. Subscription automatically renews unless cancelled.
+      <h2 className="text-xl font-semibold mt-6 mb-2">Accounts &amp; Billing</h2>
+      <p className="text-sm text-slate-300 mb-2">
+        Paid plans such as JJJ AI Pro are billed in advance on a recurring basis
+        (monthly or yearly, depending on the plan selected). Access to premium tools is
+        provided only while an active subscription is in place.
       </p>
 
-      <h2 className="text-xl font-semibold mt-6">4. Usage Restrictions</h2>
-      <p>
-        Users may not misuse the AI system for harmful, illegal, or abusive activities. 
-        Accounts violating policies may be terminated.
+      <h2 className="text-xl font-semibold mt-6 mb-2">Prohibited Use</h2>
+      <p className="text-sm text-slate-300 mb-2">
+        You must not use JJJ AI Studio to generate illegal, harmful, hateful or abusive
+        content, or to violate any applicable law or regulation.
       </p>
 
-      <h2 className="text-xl font-semibold mt-6">5. Termination</h2>
-      <p>
-        We reserve the right to suspend or terminate access if misuse or fraudulent 
-        activity is detected.
+      <h2 className="text-xl font-semibold mt-6 mb-2">Contact</h2>
+      <p className="text-sm text-slate-300">
+        For any questions about these Terms, please contact us at
+        {' '}<a href="mailto:support@jjjai.com" className="text-sky-400">
+          support@jjjai.com
+        </a>.
       </p>
-
-      <h2 className="text-xl font-semibold mt-6">6. Changes to Terms</h2>
-      <p>
-        Terms may be updated anytime. Continued use of the service means you accept the changes.
-      </p>
-
-      <p className="mt-8">If you have questions, contact us at support@jjjai.com</p>
-    </div>
+    </main>
   );
 }

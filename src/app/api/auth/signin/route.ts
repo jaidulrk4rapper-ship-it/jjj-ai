@@ -116,7 +116,21 @@ export async function POST(req: NextRequest) {
           lastLoginAt: Timestamp.now(),
         };
 
-        const updatedUser = await updateUser(userId, updateData);
+        let updatedUser;
+        try {
+          updatedUser = await updateUser(userId, updateData);
+        } catch (error: any) {
+          if (error?.message?.includes("Firebase not configured")) {
+            return NextResponse.json(
+              {
+                ok: false,
+                error: "Firebase is not configured. Please set FIREBASE_SERVICE_ACCOUNT_KEY in your environment variables. Check .env.local file.",
+              },
+              { status: 500 }
+            );
+          }
+          throw error;
+        }
 
         const response = NextResponse.json({
           ok: true,
@@ -134,8 +148,8 @@ export async function POST(req: NextRequest) {
           httpOnly: true,
           secure: isProduction,
           sameSite: "lax",
-          maxAge: 60 * 60 * 24 * 365,
           path: "/",
+          maxAge: 60 * 60 * 24 * 30, // 30 days
         });
 
         return response;
@@ -155,9 +169,23 @@ export async function POST(req: NextRequest) {
     }
 
     // Update last login
-    const updatedUser = await updateUser(userId, {
-      lastLoginAt: Timestamp.now(),
-    });
+    let updatedUser;
+    try {
+      updatedUser = await updateUser(userId, {
+        lastLoginAt: Timestamp.now(),
+      });
+    } catch (error: any) {
+      if (error?.message?.includes("Firebase not configured")) {
+        return NextResponse.json(
+          {
+            ok: false,
+            error: "Firebase is not configured. Please set FIREBASE_SERVICE_ACCOUNT_KEY in your environment variables. Check .env.local file.",
+          },
+          { status: 500 }
+        );
+      }
+      throw error;
+    }
 
     // Get cookie store for checking/setting cookie
     const cookieStore = await cookies();
@@ -180,8 +208,8 @@ export async function POST(req: NextRequest) {
         httpOnly: true,
         secure: isProduction,
         sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 365, // 1 year
         path: "/",
+        maxAge: 60 * 60 * 24 * 30, // 30 days
       });
     }
 

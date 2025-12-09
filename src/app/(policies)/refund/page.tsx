@@ -1,30 +1,33 @@
 export default function RefundPage() {
   return (
-    <div className="p-8 max-w-3xl mx-auto text-white">
-      <h1 className="text-3xl font-bold mb-6">Refund & Cancellation Policy</h1>
-
-      <h2 className="text-xl font-semibold mt-6">1. Digital Service</h2>
-      <p>
-        JJJ AI Premium is a digital subscription providing instant access to AI tools.
-        Since the service is delivered instantly, refunds are generally not provided.
+    <main className="mx-auto max-w-3xl px-4 py-10 text-slate-100">
+      <h1 className="text-3xl font-semibold mb-6">Refund &amp; Cancellation Policy</h1>
+      <p className="mb-4 text-sm text-slate-300">
+        This policy applies to subscriptions purchased for JJJ AI Studio ("Service").
       </p>
 
-      <h2 className="text-xl font-semibold mt-6">2. Cancellation</h2>
-      <p>
-        Users may cancel their subscription anytime. Access will continue until the end of the billing period.
+      <h2 className="text-xl font-semibold mt-6 mb-2">Subscriptions</h2>
+      <p className="text-sm text-slate-300 mb-2">
+        JJJ AI Pro is billed on a recurring basis (monthly or yearly). Once a billing
+        cycle has started, fees already paid for that cycle are generally non-refundable.
       </p>
 
-      <h2 className="text-xl font-semibold mt-6">3. Refund Exceptions</h2>
-      <p>
-        Refund may be granted only in rare cases such as:
-        <br />- Duplicate payment
-        <br />- Failed payment but amount debited
+      <h2 className="text-xl font-semibold mt-6 mb-2">Refunds</h2>
+      <p className="text-sm text-slate-300 mb-2">
+        If you face any technical issue that prevents you from using the Service
+        properly, you can contact us within 3 days of purchase at
+        {' '}<a href="mailto:support@jjjai.com" className="text-sky-400">
+          support@jjjai.com
+        </a>{' '}
+        and we will review refund requests on a case-by-case basis.
       </p>
 
-      <h2 className="text-xl font-semibold mt-6">4. Contact</h2>
-      <p>
-        For refund queries, email: support@jjjai.com
+      <h2 className="text-xl font-semibold mt-6 mb-2">Cancellation</h2>
+      <p className="text-sm text-slate-300 mb-2">
+        You can cancel your subscription at any time from your account settings or by
+        contacting support. After cancellation, you will continue to have access until
+        the end of the current billing period.
       </p>
-    </div>
+    </main>
   );
 }

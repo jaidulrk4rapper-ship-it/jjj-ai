@@ -21,18 +21,18 @@ export default function ConditionalLayout({
   }
 
   // Desktop margin depends on collapsed state.
-  // Mobile (width < md) me margin left 0 rahega (CSS breakpoints se).
-  const desktopMargin = settings.sidebarCollapsed ? "0px" : "260px";
+  // Mobile (width < md) me margin left 0 rahega (sidebar overlay hai)
+  const desktopMargin = settings.sidebarCollapsed ? "0px" : "240px";
 
   return (
     <div className="flex min-h-screen">
       <Sidebar />
       <div
         className={clsx(
-          "flex-1 flex flex-col transition-all duration-300 ease-in-out",
+          "flex-1 flex flex-col transition-all duration-300 ease-in-out w-full",
           // Mobile: no margin (sidebar overlay)
           // Desktop: dynamic margin based on collapsed state
-          settings.sidebarCollapsed ? "md:ml-0" : "md:ml-[260px]"
+          settings.sidebarCollapsed ? "md:ml-0" : "md:ml-[240px]"
         )}
         style={
           {
@@ -42,8 +42,8 @@ export default function ConditionalLayout({
         }
       >
         <Topbar />
-        <main className="flex-1 p-4 md:p-6 bg-black">
-          <div className="h-full rounded-xl border border-[#1A1A1A] bg-[#0A0A0A] p-4 md:p-6">
+        <main className="flex-1 p-2 sm:p-3 md:p-4 lg:p-6 bg-black overflow-x-hidden">
+          <div className="h-full rounded-lg sm:rounded-xl border border-[#1A1A1A] bg-[#0A0A0A] p-3 sm:p-4 md:p-5 lg:p-6">
             {children}
           </div>
         </main>

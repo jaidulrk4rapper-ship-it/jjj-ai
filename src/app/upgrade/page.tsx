@@ -15,8 +15,17 @@ declare global {
 export default function UpgradePage() {
   const { user, loading: userLoading } = useJjjUser();
   
-  // Show login prompt if user is not logged in
-  if (!userLoading && (!user || !user.email)) {
+  // Show loading state while checking authentication
+  if (userLoading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="text-gray-400">Loading...</div>
+      </div>
+    );
+  }
+
+  // Show login prompt if user is not logged in (only after loading is complete)
+  if (!user || !user.email) {
     return <LoginPrompt title="Sign in to upgrade" message="Please sign in with your email to upgrade to JJJ AI Pro." />;
   }
 

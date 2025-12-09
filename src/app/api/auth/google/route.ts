@@ -66,8 +66,8 @@ async function handleEmailLogin(email: string, req: NextRequest) {
     httpOnly: true,
     secure: isProduction,
     sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 365,
     path: "/",
+    maxAge: 60 * 60 * 24 * 30, // 30 days
   });
 
   return response;

@@ -16,8 +16,17 @@ export default function AccountPage() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
 
-  // Show login prompt if user is not logged in
-  if (!userLoading && (!user || !user.email)) {
+  // Show loading state while checking authentication
+  if (userLoading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="text-gray-400">Loading...</div>
+      </div>
+    );
+  }
+
+  // Show login prompt if user is not logged in (only after loading is complete)
+  if (!user || !user.email) {
     return <LoginPrompt title="Sign in to view account" message="Please sign in with your email to view your account settings." />;
   }
 

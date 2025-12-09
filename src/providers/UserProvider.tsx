@@ -32,27 +32,33 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     user: null,
   });
 
-  const loadUser = useCallback(async () => {
+  const loadUser = useCallback(async (signal: AbortSignal) => {
     try {
       // Check localStorage for existing userId
       const storedUserId = typeof window !== "undefined" ? localStorage.getItem("jjj_user_id") : null;
-      const storedEmail = typeof window !== "undefined" ? localStorage.getItem("jjj_email") : null;
 
       let response: Response;
       
+      // Always try to get user with stored userId if available
+      // The API will handle cookie as well, but header takes precedence for consistency
       if (storedUserId) {
-        // Try to get existing user
+        // Try to get existing user with stored userId
         response = await fetch("/api/user/me", {
           headers: {
             "x-user-id": storedUserId,
           },
+          credentials: "include", // Include cookies
+          signal,
         });
       } else {
-        // Create guest user
-        response = await fetch("/api/auth/guest", {
-          method: "POST",
+        // No stored userId - create guest user or get from cookie
+        response = await fetch("/api/user/me", {
+          credentials: "include", // Include cookies
+          signal,
         });
       }
+
+      if (signal.aborted) return;
 
       if (!response.ok) {
         throw new Error("Failed to load user");
@@ -60,8 +66,11 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
       const data = await response.json();
       
+      if (signal.aborted) return;
+      
       if (data.ok && data.user) {
-        // Save to localStorage
+        // Always update localStorage with the user data from API
+        // This ensures localStorage stays in sync with the server
         if (typeof window !== "undefined") {
           localStorage.setItem("jjj_user_id", data.user.userId);
           if (data.user.email) {
@@ -71,25 +80,66 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
           }
         }
 
-        setState({
-          loading: false,
-          user: data.user,
-        });
+        if (!signal.aborted) {
+          setState({
+            loading: false,
+            user: data.user,
+          });
+        }
       } else {
         throw new Error(data.error || "Failed to load user");
       }
-    } catch (error) {
+    } catch (error: any) {
+      if (signal.aborted || error.name === 'AbortError') return;
+      
       console.error("Error loading user:", error);
+      // On error, try to create a guest user as fallback
+      try {
+        const fallbackResponse = await fetch("/api/auth/guest", {
+          method: "POST",
+          credentials: "include",
+          signal,
+        });
+        
+        if (signal.aborted) return;
+        
+        if (fallbackResponse.ok) {
+          const fallbackData = await fallbackResponse.json();
+          if (fallbackData.ok && fallbackData.user) {
+            if (typeof window !== "undefined") {
+              localStorage.setItem("jjj_user_id", fallbackData.user.userId);
+              localStorage.removeItem("jjj_email");
+            }
+            if (!signal.aborted) {
+              setState({
+                loading: false,
+                user: fallbackData.user,
+              });
+            }
+            return;
+          }
+        }
+      } catch (fallbackError: any) {
+        if (fallbackError.name === 'AbortError') return;
+        console.error("Fallback guest user creation failed:", fallbackError);
+      }
+      
       // Set loading to false even on error
-      setState({
-        loading: false,
-        user: null,
-      });
+      if (!signal.aborted) {
+        setState({
+          loading: false,
+          user: null,
+        });
+      }
     }
   }, []);
 
   useEffect(() => {
-    loadUser();
+    const abortController = new AbortController();
+    loadUser(abortController.signal);
+    return () => {
+      abortController.abort();
+    };
   }, [loadUser]);
 
   const signInWithEmail = useCallback(async (email: string, password?: string, isGoogleAuth?: boolean) => {

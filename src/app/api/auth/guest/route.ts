@@ -6,7 +6,7 @@ import { ensureGuestUser } from "@/lib/users";
 import { cookies } from "next/headers";
 
 const COOKIE_NAME = "jjj_device_id";
-const COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 
 function generateDeviceId(): string {
   // Generate a random UUID-like string
@@ -40,14 +40,14 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Set cookie with httpOnly, secure in production, long expiration
+    // Set cookie with httpOnly, secure in production, 30 days expiration
     const isProduction = process.env.NODE_ENV === "production";
     response.cookies.set(COOKIE_NAME, deviceId, {
       httpOnly: true,
       secure: isProduction,
       sameSite: "lax",
-      maxAge: COOKIE_MAX_AGE,
       path: "/",
+      maxAge: COOKIE_MAX_AGE,
     });
 
     return response;

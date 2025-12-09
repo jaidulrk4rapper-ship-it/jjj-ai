@@ -10,8 +10,8 @@ import {
   Image as ImageIcon,
   Home,
   Crown,
-  ChevronLeft,
-  ChevronRight,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from 'lucide-react';
 import { useSettings } from '@/contexts/SettingsContext';
 
@@ -94,13 +94,21 @@ export default function Sidebar() {
 
   return (
     <>
+      {/* Mobile overlay */}
+      {!isCollapsed && (
+        <div 
+          className="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm md:hidden"
+          onClick={toggleSidebar}
+        />
+      )}
+      
       <div className={`fixed left-0 top-0 z-30 flex h-screen flex-col bg-zinc-50/90 backdrop-blur-xl dark:bg-[#050505]/90 transition-all duration-300 ease-in-out ${
         isCollapsed 
-          ? "w-0 overflow-hidden border-r-0" 
-          : "w-60 border-r border-zinc-200 dark:border-[#1A1A1A]"
+          ? "w-0 overflow-hidden border-r-0 -translate-x-full md:translate-x-0" 
+          : "w-64 sm:w-60 border-r border-zinc-200 dark:border-[#1A1A1A]"
       }`}>
         <div 
-          className={`flex flex-col gap-6 p-4 transition-opacity duration-300 ease-in-out ${
+          className={`flex flex-col gap-4 sm:gap-6 p-3 sm:p-4 transition-opacity duration-300 ease-in-out ${
             isCollapsed ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto"
           }`}
           style={{
@@ -108,9 +116,9 @@ export default function Sidebar() {
           }}
         >
           {/* Top brand */}
-          <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-[#1A1A1A]">
+          <div className="flex items-center justify-between border-b border-gray-200 pb-3 sm:pb-4 dark:border-[#1A1A1A]">
             <div className="flex items-center gap-2">
-              <span className={`text-lg font-bold bg-gradient-to-r from-sky-400 via-blue-500 to-sky-400 bg-clip-text text-transparent ${
+              <span className={`text-base sm:text-lg font-bold bg-gradient-to-r from-sky-400 via-blue-500 to-sky-400 bg-clip-text text-transparent ${
                 isCollapsed ? "hidden" : ""
               }`}>
                 JJJ AI
@@ -118,7 +126,7 @@ export default function Sidebar() {
               <span className="inline-flex h-2 w-2 rounded-full bg-sky-500 shadow-[0_0_12px_rgba(56,189,248,0.9)]" />
             </div>
             {!isCollapsed && (
-              <span className="text-[10px] uppercase text-gray-600 dark:text-gray-400">Studio</span>
+              <span className="text-[10px] uppercase text-gray-600 dark:text-gray-400 hidden sm:inline">Studio</span>
             )}
           </div>
 
@@ -132,7 +140,7 @@ export default function Sidebar() {
                 <div key={item.id} className="space-y-0.5">
                   <Link
                     href={item.href}
-                    className={`group flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-all duration-150 ${
+                    className={`group flex items-center gap-2 rounded-lg px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm transition-all duration-150 ${
                       active
                         ? 'bg-zinc-100 text-zinc-900 border border-zinc-300 shadow-[0_0_0_1px_rgba(56,189,248,0.4)] dark:bg-[#111111] dark:text-white dark:border-[#1A1A1A]'
                         : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 hover:translate-x-[2px] dark:text-gray-400 dark:hover:bg-[#111111] dark:hover:text-white'
@@ -145,7 +153,7 @@ export default function Sidebar() {
                           : 'text-gray-500 group-hover:text-sky-500 dark:group-hover:text-sky-400'
                       }`}
                     />
-                    {!isCollapsed && <span className="flex-1">{item.label}</span>}
+                    {!isCollapsed && <span className="flex-1 truncate">{item.label}</span>}
                   </Link>
                   {usageLabel && !isCollapsed && (
                     <div className="px-3">
@@ -161,17 +169,17 @@ export default function Sidebar() {
 
           {/* Upgrade to Pro CTA */}
           {usageData?.plan === 'free' && !isCollapsed && (
-            <div className="mt-auto mb-2 rounded-lg border border-sky-500/30 bg-gradient-to-br from-sky-500/10 to-blue-500/10 p-3">
-              <div className="flex items-center gap-2 mb-2">
-                <Crown className="h-4 w-4 text-sky-500" />
-                <span className="text-xs font-semibold text-sky-600 dark:text-sky-400">Upgrade to Pro</span>
+            <div className="mt-auto mb-2 rounded-lg border border-sky-500/30 bg-gradient-to-br from-sky-500/10 to-blue-500/10 p-2.5 sm:p-3">
+              <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
+                <Crown className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-sky-500" />
+                <span className="text-[10px] sm:text-xs font-semibold text-sky-600 dark:text-sky-400">Upgrade to Pro</span>
               </div>
-              <p className="text-[10px] text-gray-600 dark:text-gray-400 mb-2">
+              <p className="text-[9px] sm:text-[10px] text-gray-600 dark:text-gray-400 mb-1.5 sm:mb-2">
                 Get unlimited access to all features
               </p>
               <Link
                 href="/upgrade"
-                className="block w-full text-center rounded-md bg-sky-600 hover:bg-sky-700 text-white text-xs py-1.5 px-2 transition-colors"
+                className="block w-full text-center rounded-md bg-sky-600 hover:bg-sky-700 text-white text-[10px] sm:text-xs py-1.5 px-2 transition-colors"
               >
                 ₹699/month
               </Link>
@@ -190,19 +198,19 @@ export default function Sidebar() {
           )}
 
 
-          {/* Collapse/Expand Button - ChatGPT style */}
+          {/* Collapse/Expand Button */}
           <div className="border-t border-gray-200 dark:border-[#1A1A1A] pt-2 px-2">
             <button
               onClick={toggleSidebar}
-              className="w-full flex items-center gap-2 rounded-lg px-2 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#111111] transition-colors"
+              className="w-full flex items-center gap-2 rounded-lg px-2 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#111111] transition-colors"
               title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
               {isCollapsed ? (
-                <ChevronRight className="h-4 w-4 mx-auto" />
+                <PanelLeftOpen className="h-4 w-4 mx-auto" />
               ) : (
                 <>
-                  <ChevronLeft className="h-4 w-4" />
-                  <span>Collapse</span>
+                  <PanelLeftClose className="h-4 w-4 flex-shrink-0" />
+                  <span className="hidden sm:inline">Collapse</span>
                 </>
               )}
             </button>
