@@ -59,8 +59,18 @@ export async function POST(req: NextRequest) {
       },
     };
 
+    console.log("Creating Razorpay order with options:", {
+      amount,
+      currency,
+      receipt,
+      userId,
+      email: user.email,
+    });
+
     const razorpay = getRazorpayInstance();
     const order = await razorpay.orders.create(options);
+
+    console.log("Razorpay order created successfully:", order.id);
 
     return NextResponse.json({
       orderId: order.id,
@@ -70,20 +80,42 @@ export async function POST(req: NextRequest) {
     });
   } catch (error: any) {
     console.error("Error creating Razorpay order:", error);
+    console.error("Error details:", {
+      message: error.message,
+      statusCode: error.statusCode,
+      error: error.error,
+      description: error.description,
+      field: error.field,
+      source: error.source,
+      step: error.step,
+      reason: error.reason,
+      metadata: error.metadata,
+    });
     
     // More detailed error messages
     let errorMessage = "Failed to create payment order";
     
     if (error.message?.includes("Razorpay keys are not configured")) {
       errorMessage = "Payment gateway is not configured. Please contact support.";
-    } else if (error.message?.includes("authentication") || error.message?.includes("401")) {
+    } else if (error.message?.includes("authentication") || error.message?.includes("401") || error.statusCode === 401) {
       errorMessage = "Invalid payment gateway credentials. Please contact support.";
+    } else if (error.error?.description) {
+      errorMessage = error.error.description;
+    } else if (error.description) {
+      errorMessage = error.description;
     } else if (error.message) {
       errorMessage = error.message;
     }
     
     return NextResponse.json(
-      { error: errorMessage },
+      { 
+        error: errorMessage,
+        details: process.env.NODE_ENV === "development" ? {
+          statusCode: error.statusCode,
+          errorCode: error.error?.code,
+          description: error.error?.description || error.description,
+        } : undefined,
+      },
       { status: 500 }
     );
   }
