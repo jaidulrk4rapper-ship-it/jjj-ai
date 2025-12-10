@@ -74,7 +74,8 @@ export default function HomePage() {
               <div className="flex flex-wrap items-center gap-3">
                 <Link
                   href="/"
-                  className="rounded-full bg-gradient-to-r from-sky-500 to-indigo-400 px-4 py-2 text-xs font-semibold text-slate-950 shadow-[0_18px_45px_rgba(56,189,248,0.50)] hover:from-sky-400 hover:to-indigo-300 transition-all"
+                  className="rounded-full bg-gradient-to-r from-sky-500 to-indigo-400 px-4 py-2 text-xs font-semibold text-slate-950 shadow-[0_18px_45px_rgba(56,189,248,0.50)] hover:from-sky-400 hover:to-indigo-300 transition-all focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-[#020617]"
+                  aria-label="Launch JJJ AI Studio"
                 >
                   Launch Studio
                 </Link>

@@ -12,6 +12,7 @@ import {
   RefreshCw
 } from "lucide-react";
 import { adminFetch } from "@/lib/adminClient";
+import { useToast } from "@/components/ToastProvider";
 import type { AdminStats } from "@/app/api/admin/stats/route";
 
 export default function AdminDashboard() {
@@ -19,6 +20,7 @@ export default function AdminDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [stats, setStats] = useState<AdminStats | null>(null);
   const router = useRouter();
+  const toast = useToast();
 
   const fetchStats = async () => {
     try {
@@ -29,16 +31,20 @@ export default function AdminDashboard() {
       // Extract stats (remove ok field)
       const { ok, ...statsData } = data;
       setStats(statsData);
+      toast.success("Stats loaded successfully");
     } catch (err: any) {
       console.error("Failed to fetch stats:", err);
       
       if (err.message === "ADMIN_UNAUTHORIZED") {
         localStorage.removeItem("jjj_admin_key");
+        toast.error("Session expired. Please login again.");
         router.push("/admin/login");
         return;
       }
       
-      setError(err?.message || "Failed to load dashboard");
+      const errorMsg = err?.message || "Failed to load dashboard";
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -112,9 +118,12 @@ export default function AdminDashboard() {
         </div>
         <button
           onClick={fetchStats}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1A1A1A] hover:bg-[#252525] text-white text-sm transition-colors border border-[#2A2A2A]"
+          disabled={loading}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1A1A1A] hover:bg-[#252525] text-white text-sm transition-colors border border-[#2A2A2A] disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black"
+          aria-label="Refresh dashboard stats"
+          aria-busy={loading}
         >
-          <RefreshCw className="w-4 h-4" />
+          <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           Refresh
         </button>
       </div>

@@ -12,6 +12,7 @@ import {
   Loader2
 } from "lucide-react";
 import { adminFetch } from "@/lib/adminClient";
+import { useToast } from "@/components/ToastProvider";
 import type { AdminUser } from "@/app/api/admin/users/route";
 
 interface UsersResponse {
@@ -32,6 +33,7 @@ export default function AdminUsersPage() {
   const [error, setError] = useState<string | null>(null);
   const [updatingUid, setUpdatingUid] = useState<string | null>(null);
   const router = useRouter();
+  const toast = useToast();
 
   const fetchUsers = async () => {
     try {
@@ -41,6 +43,7 @@ export default function AdminUsersPage() {
       const data = await adminFetch<UsersResponse>("/api/admin/users");
       if (data.ok) {
         setUsers(data.users);
+        toast.success(`Loaded ${data.users.length} users`);
       } else {
         throw new Error(data.error || "Failed to fetch users");
       }
@@ -49,11 +52,14 @@ export default function AdminUsersPage() {
       
       if (err.message === "ADMIN_UNAUTHORIZED") {
         localStorage.removeItem("jjj_admin_key");
+        toast.error("Session expired. Please login again.");
         router.push("/admin/login");
         return;
       }
       
-      setError(err?.message || "Failed to load users");
+      const errorMsg = err?.message || "Failed to load users";
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -79,12 +85,14 @@ export default function AdminUsersPage() {
         setUsers((prev) =>
           prev.map((u) => (u.uid === uid ? data.user : u))
         );
+        toast.success("User updated successfully");
       } else {
         throw new Error(data.error || "Failed to update user");
       }
     } catch (err: any) {
       console.error("Failed to update user:", err);
-      alert(err?.message || "Failed to update user");
+      const errorMsg = err?.message || "Failed to update user";
+      toast.error(errorMsg);
     } finally {
       setUpdatingUid(null);
     }
@@ -154,9 +162,12 @@ export default function AdminUsersPage() {
         </div>
         <button
           onClick={fetchUsers}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1A1A1A] hover:bg-[#252525] text-white text-sm transition-colors border border-[#2A2A2A]"
+          disabled={loading}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1A1A1A] hover:bg-[#252525] text-white text-sm transition-colors border border-[#2A2A2A] disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black"
+          aria-label="Refresh users list"
+          aria-busy={loading}
         >
-          <RefreshCw className="w-4 h-4" />
+          <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           Refresh
         </button>
       </div>
@@ -256,23 +267,26 @@ export default function AdminUsersPage() {
                               <button
                                 onClick={() => togglePlan(user)}
                                 disabled={isUpdating}
-                                className="px-3 py-1.5 text-xs rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-600/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="px-3 py-1.5 text-xs rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-600/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-[#0A0A0A]"
+                                aria-label={`Change ${user.email} plan to ${user.plan === "free" ? "pro" : "free"}`}
                               >
                                 {user.plan === "free" ? "Make Pro" : "Make Free"}
                               </button>
                               <button
                                 onClick={() => addCoins(user.uid)}
                                 disabled={isUpdating}
-                                className="p-1.5 rounded-lg bg-green-600/20 hover:bg-green-600/30 text-green-400 border border-green-600/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="p-1.5 rounded-lg bg-green-600/20 hover:bg-green-600/30 text-green-400 border border-green-600/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-[#0A0A0A]"
                                 title="Add 100 Coins"
+                                aria-label={`Add 100 coins to ${user.email}`}
                               >
                                 <Plus className="w-3 h-3" />
                               </button>
                               <button
                                 onClick={() => removeCoins(user.uid)}
                                 disabled={isUpdating}
-                                className="p-1.5 rounded-lg bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-600/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="p-1.5 rounded-lg bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-600/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-[#0A0A0A]"
                                 title="Remove 100 Coins"
+                                aria-label={`Remove 100 coins from ${user.email}`}
                               >
                                 <Minus className="w-3 h-3" />
                               </button>

@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useJjjUser } from "@/providers/UserProvider";
 import LoginPrompt from "@/components/LoginPrompt";
+import { useToast } from "@/components/ToastProvider";
+import { ImageSkeleton } from "@/components/LoadingSkeleton";
 
 type GeneratedImage = {
   id: string;
@@ -38,6 +40,7 @@ export default function TextToImagePage() {
 
   async function handleGenerate() {
     if (!prompt.trim()) {
+      toast.error("Please enter a prompt first.");
       setError("Please enter a prompt first.");
       return;
     }
@@ -75,21 +78,30 @@ export default function TextToImagePage() {
       };
 
       setImages((prev) => [img, ...prev]);
+      toast.success("Image generated successfully!");
+      setPrompt(""); // Clear prompt after success
     } catch (err: any) {
       console.error("Generate image error:", err);
-      setError(err.message || "Something went wrong.");
+      const errorMsg = err.message || "Something went wrong.";
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
   }
 
   function handleDownload(img: GeneratedImage) {
-    const a = document.createElement("a");
-    a.href = img.dataUrl;
-    a.download = `jjjai-image-${img.id}.png`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    try {
+      const a = document.createElement("a");
+      a.href = img.dataUrl;
+      a.download = `jjjai-image-${img.id}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      toast.success("Image downloaded!");
+    } catch (err) {
+      toast.error("Failed to download image.");
+    }
   }
 
   const mainImage = images[0];
@@ -210,9 +222,18 @@ export default function TextToImagePage() {
           <button
             onClick={handleGenerate}
             disabled={loading}
-            className="mt-2 md:mt-auto flex items-center justify-center rounded-xl bg-sky-500 px-3 py-2 text-xs font-semibold text-black hover:bg-sky-400 disabled:cursor-not-allowed disabled:opacity-60 w-full"
+            className="mt-2 md:mt-auto flex items-center justify-center rounded-xl bg-sky-500 px-3 py-2 text-xs font-semibold text-black hover:bg-sky-400 disabled:cursor-not-allowed disabled:opacity-60 w-full focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-[#020617] transition-all"
+            aria-label={loading ? "Generating image, please wait" : "Generate image"}
+            aria-busy={loading}
           >
-            {loading ? "Generating…" : "Generate image"}
+            {loading ? (
+              <>
+                <div className="h-3 w-3 border-2 border-black border-t-transparent rounded-full animate-spin mr-2" />
+                Generating…
+              </>
+            ) : (
+              "Generate image"
+            )}
           </button>
         </section>
 
@@ -255,7 +276,8 @@ export default function TextToImagePage() {
                     </div>
                     <button
                       onClick={() => handleDownload(mainImage)}
-                      className="rounded-lg border border-sky-500/70 bg-sky-500/10 px-3 py-1 text-[11px] font-medium text-sky-200 hover:bg-sky-500/20"
+                      className="rounded-lg border border-sky-500/70 bg-sky-500/10 px-3 py-1 text-[11px] font-medium text-sky-200 hover:bg-sky-500/20 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-black transition-all"
+                      aria-label={`Download image: ${mainImage.prompt}`}
                     >
                       Download
                     </button>

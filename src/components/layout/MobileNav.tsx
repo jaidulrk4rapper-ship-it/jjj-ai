@@ -68,13 +68,15 @@ export default function MobileNav() {
           <Link
             key={item.id}
             href={item.href}
-            className={`flex flex-col items-center justify-center gap-0.5 px-2 py-1.5 rounded-lg transition-all min-w-0 flex-1 ${
+            className={`flex flex-col items-center justify-center gap-0.5 px-2 py-1.5 rounded-lg transition-all min-w-0 flex-1 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-[#0A0A0A] ${
               active
                 ? "text-sky-400 bg-sky-500/15 scale-105"
                 : "text-gray-400 hover:text-gray-300 active:scale-95"
             }`}
+            aria-label={`Navigate to ${item.label}`}
+            aria-current={active ? "page" : undefined}
           >
-            <Icon className={`h-5 w-5 flex-shrink-0 ${active ? "text-sky-400" : ""}`} />
+            <Icon className={`h-5 w-5 flex-shrink-0 ${active ? "text-sky-400" : ""}`} aria-hidden="true" />
             <span className="text-[9px] sm:text-[10px] font-medium truncate w-full text-center leading-tight">
               {item.label}
             </span>

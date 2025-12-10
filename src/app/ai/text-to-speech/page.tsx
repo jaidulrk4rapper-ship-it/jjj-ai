@@ -2,6 +2,7 @@
 
 import { useJjjUser } from "@/providers/UserProvider";
 import LoginPrompt from "@/components/LoginPrompt";
+import { useToast } from "@/components/ToastProvider";
 
 import { useState, useRef, useEffect } from "react";
 
@@ -74,6 +75,7 @@ interface TTSUsageInfo {
 
 export default function TextToSpeechPage() {
   const { user, loading: userLoading } = useJjjUser();
+  const toast = useToast();
   
   // Show login prompt if user is not logged in
   if (!userLoading && (!user || !user.email)) {
@@ -179,11 +181,15 @@ export default function TextToSpeechPage() {
     const effectiveCharLimit = usage?.maxChars ?? charLimit;
 
     if (!trimmed) {
-      setError("Please enter some text");
+      const msg = "Please enter some text";
+      setError(msg);
+      toast.error(msg);
       return;
     }
     if (trimmed.length > effectiveCharLimit) {
-      setError(`Text is too long. Max ${effectiveCharLimit} characters for your plan.`);
+      const msg = `Text is too long. Max ${effectiveCharLimit} characters for your plan.`;
+      setError(msg);
+      toast.error(msg);
       return;
     }
 
@@ -253,19 +259,30 @@ export default function TextToSpeechPage() {
         const next = [entry, ...prev];
         return next.slice(0, 5); // keep last 5
       });
+      toast.success("Audio generated successfully!");
     } catch (err: any) {
-      setError(err?.message || "OpenAI TTS failed");
+      const errorMsg = err?.message || "OpenAI TTS failed";
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
   };
 
   const handleDownload = () => {
-    if (!audioUrl) return;
-    const a = document.createElement("a");
-    a.href = audioUrl;
-    a.download = buildDownloadName(voice);
-    a.click();
+    if (!audioUrl) {
+      toast.error("No audio to download");
+      return;
+    }
+    try {
+      const a = document.createElement("a");
+      a.href = audioUrl;
+      a.download = buildDownloadName(voice);
+      a.click();
+      toast.success("Audio downloaded!");
+    } catch (err) {
+      toast.error("Failed to download audio");
+    }
   };
 
   const effectiveCharLimit = usage?.maxChars ?? charLimit;
@@ -401,7 +418,9 @@ export default function TextToSpeechPage() {
               type="button"
               onClick={handleSpeak}
               disabled={loading || !text.trim() || text.trim().length > effectiveCharLimit}
-              className="rounded-lg bg-sky-500 px-3 py-2 text-xs font-medium text-white hover:bg-sky-400 disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
+              className="rounded-lg bg-sky-500 px-3 py-2 text-xs font-medium text-white hover:bg-sky-400 disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-black transition-all"
+              aria-label={loading ? "Generating audio, please wait" : "Generate speech"}
+              aria-busy={loading}
             >
               {loading ? (
                 <>

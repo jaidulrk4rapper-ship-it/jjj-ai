@@ -95,11 +95,12 @@ export default function Topbar() {
           <button
             type="button"
             onClick={toggleSidebar}
-            className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-white/5 text-white/80 hover:bg-white/10 transition-colors flex-shrink-0"
+            className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-white/5 text-white/80 hover:bg-white/10 transition-colors flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-black"
             aria-label={settings.sidebarCollapsed ? "Show sidebar" : "Hide sidebar"}
+            aria-expanded={!settings.sidebarCollapsed}
             title={settings.sidebarCollapsed ? "Show sidebar" : "Hide sidebar"}
           >
-            <Menu className="h-4 w-4 sm:h-5 sm:w-5" />
+            <Menu className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
           </button>
 
           <div className="flex flex-col min-w-0">

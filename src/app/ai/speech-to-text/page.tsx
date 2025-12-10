@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useJjjUser } from "@/providers/UserProvider";
 import LoginPrompt from "@/components/LoginPrompt";
+import { useToast } from "@/components/ToastProvider";
 import { Mic, MicOff, Upload, Square, Play, Pause } from "lucide-react";
 
 type Status = "idle" | "uploading" | "transcribing" | "recording";
@@ -160,12 +161,16 @@ export default function SpeechToTextPage() {
             return;
           }
           if (event.error === "network") {
-            setError("Network error. Please check your connection.");
+            const msg = "Network error. Please check your connection.";
+            setError(msg);
+            toast.error(msg);
             setIsLiveTranscribing(false);
             shouldContinueRef.current = false;
             return;
           }
-          setError(`Speech recognition error: ${event.error}`);
+          const errorMsg = `Speech recognition error: ${event.error}`;
+          setError(errorMsg);
+          toast.error(errorMsg);
           setIsLiveTranscribing(false);
           shouldContinueRef.current = false;
         };

@@ -6,6 +6,7 @@ import { useSettings } from "@/contexts/SettingsContext";
 import { useJjjUser } from "@/providers/UserProvider";
 import { apiFetch } from "@/lib/apiClient";
 import LoginPrompt from "@/components/LoginPrompt";
+import { useToast } from "@/components/ToastProvider";
 import { ChevronDown, Plus, Mic, Volume2, Menu, Send, Sparkles } from "lucide-react";
 import ChatActionsTray from "@/components/chat/ChatActionsTray";
 
@@ -20,6 +21,7 @@ export default function AiChatPage() {
   const router = useRouter();
   const { settings } = useSettings();
   const { user, loading: userLoading } = useJjjUser();
+  const toast = useToast();
   
   const { replyLength, showTimestamps, fontSize, reducedMotion, defaultLanguage, theme } = settings;
 
@@ -27,7 +29,10 @@ export default function AiChatPage() {
   if (userLoading) {
     return (
       <div className="flex h-full items-center justify-center bg-[#020617]">
-        <div className="text-slate-400">Loading...</div>
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 border-2 border-sky-500 border-t-transparent rounded-full animate-spin" />
+          <div className="text-sm text-slate-400">Loading...</div>
+        </div>
       </div>
     );
   }
