@@ -95,10 +95,10 @@ export default function TextToImagePage() {
   const mainImage = images[0];
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 overflow-x-hidden">
+    <main className="container-canvas max-w-mobile-canvas md:max-w-tablet-canvas lg:max-w-desktop-canvas mx-auto overflow-x-hidden">
       <div className="flex flex-col gap-4 md:grid md:grid-cols-[minmax(0,2fr)_minmax(0,1.3fr)] md:gap-6">
         {/* LEFT: Controls - Full width on mobile, fixed width on desktop */}
-        <section className="w-full rounded-2xl border border-[#1a1a1a] bg-[#020617] p-4 sm:p-5 md:p-6 flex flex-col gap-4 md:h-auto overflow-y-auto">
+        <section className="w-full rounded-2xl border border-[#1a1a1a] bg-[#020617] p-6 flex flex-col gap-4 md:h-auto overflow-y-auto">
           <div>
             <h1 className="text-2xl font-bold md:text-3xl text-white">Text to Image</h1>
             <p className="mt-1 text-sm text-slate-300 md:text-base">
@@ -210,7 +210,7 @@ export default function TextToImagePage() {
           <button
             onClick={handleGenerate}
             disabled={loading}
-            className="mt-2 md:mt-auto flex items-center justify-center rounded-xl bg-sky-500 px-4 py-2.5 md:py-2 text-xs md:text-sm font-semibold text-black hover:bg-sky-400 disabled:cursor-not-allowed disabled:opacity-60 w-full"
+            className="mt-2 md:mt-auto flex items-center justify-center rounded-xl bg-sky-500 px-3 py-2 text-xs font-semibold text-black hover:bg-sky-400 disabled:cursor-not-allowed disabled:opacity-60 w-full"
           >
             {loading ? "Generating…" : "Generate image"}
           </button>

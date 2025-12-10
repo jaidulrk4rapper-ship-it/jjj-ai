@@ -277,8 +277,8 @@ export default function TextToSpeechPage() {
 
   return (
     <main className="flex flex-col min-h-screen bg-black text-gray-100">
-      <div className="mx-auto w-full max-w-5xl px-3 py-3 md:px-4 md:py-6 lg:px-8 lg:py-8 flex-1 flex flex-col overflow-hidden">
-        <div className="max-w-sm mx-auto w-full md:max-w-none flex-1 flex flex-col overflow-hidden">
+      <div className="container-canvas max-w-mobile-canvas md:max-w-tablet-canvas lg:max-w-desktop-canvas mx-auto flex-1 flex flex-col overflow-hidden">
+        <div className="w-full flex-1 flex flex-col overflow-hidden">
           {/* Header */}
           <div className="mb-3 md:mb-4 flex-shrink-0">
             <h1 className="text-xl md:text-2xl font-semibold text-white">Text to Speech</h1>
@@ -401,7 +401,7 @@ export default function TextToSpeechPage() {
               type="button"
               onClick={handleSpeak}
               disabled={loading || !text.trim() || text.trim().length > effectiveCharLimit}
-              className="rounded-lg bg-sky-500 px-4 py-2 text-sm font-medium text-white hover:bg-sky-400 disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
+              className="rounded-lg bg-sky-500 px-3 py-2 text-xs font-medium text-white hover:bg-sky-400 disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {loading ? (
                 <>

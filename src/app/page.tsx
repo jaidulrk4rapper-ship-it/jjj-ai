@@ -15,7 +15,7 @@ export default function HomePage() {
 
       {/* DESKTOP / LAPTOP LAYOUT (md and up) */}
       <div className="relative hidden md:block">
-        <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+        <div className="container-canvas max-w-tablet-canvas lg:max-w-desktop-canvas mx-auto">
           <div className="flex min-h-[calc(100vh-200px)] flex-col gap-8">
           {/* Top bar */}
           <header className="flex items-center justify-between">
@@ -36,15 +36,6 @@ export default function HomePage() {
             </div>
 
             <nav className="flex items-center gap-6 text-xs font-medium text-slate-300">
-              <a href="#tools" className="hover:text-sky-300 transition-colors">
-                Tools
-              </a>
-              <a href="#pricing" className="hover:text-sky-300 transition-colors">
-                Pricing
-              </a>
-              <a href="#faq" className="hover:text-sky-300 transition-colors">
-                FAQ
-              </a>
               <Link
                 href="/"
                 className="rounded-full bg-gradient-to-r from-sky-400 to-cyan-300 px-4 py-2 text-xs font-semibold text-slate-950 shadow-[0_14px_45px_rgba(34,211,238,0.35)] hover:from-sky-300 hover:to-cyan-200 transition-all"
@@ -80,10 +71,10 @@ export default function HomePage() {
                 </p>
               </div>
 
-              <div className="flex flex-wrap items-center gap-4">
+              <div className="flex flex-wrap items-center gap-3">
                 <Link
                   href="/"
-                  className="rounded-full bg-gradient-to-r from-sky-500 to-indigo-400 px-5 py-2.5 text-xs font-semibold text-slate-950 shadow-[0_18px_45px_rgba(56,189,248,0.50)] hover:from-sky-400 hover:to-indigo-300 transition-all"
+                  className="rounded-full bg-gradient-to-r from-sky-500 to-indigo-400 px-4 py-2 text-xs font-semibold text-slate-950 shadow-[0_18px_45px_rgba(56,189,248,0.50)] hover:from-sky-400 hover:to-indigo-300 transition-all"
                 >
                   Launch Studio
                 </Link>
@@ -91,23 +82,8 @@ export default function HomePage() {
                   href="/upgrade"
                   className="text-xs font-medium text-slate-300 hover:text-sky-300 transition-colors"
                 >
-                  See Pro plan → ₹699/month
+                  Pro → ₹699/mo
                 </Link>
-              </div>
-
-              <div className="mt-2 flex flex-wrap gap-4 text-[11px] text-slate-400">
-                <span className="inline-flex items-center gap-1.5">
-                  <span className="h-1 w-1 rounded-full bg-sky-400" /> AI Chat •
-                  TTS • STT • Images
-                </span>
-                <span className="inline-flex items-center gap-1.5">
-                  <span className="h-1 w-1 rounded-full bg-emerald-400" />{" "}
-                  Secure billing with Razorpay
-                </span>
-                <span className="inline-flex items-center gap-1.5">
-                  <span className="h-1 w-1 rounded-full bg-indigo-400" /> Fast,
-                  distraction-free UI
-                </span>
               </div>
             </div>
 
@@ -133,8 +109,8 @@ export default function HomePage() {
                     replies.
                   </p>
                 </div>
-                <div className="mt-3 flex items-center justify-between rounded-xl bg-slate-800/80 px-3 py-2 text-[11px] text-slate-100 hover:bg-slate-700/80 transition-colors">
-                  Open AI Chat <span>→</span>
+                <div className="mt-3 flex items-center justify-between rounded-xl bg-slate-800/80 px-2.5 py-1.5 text-[10px] text-slate-100 hover:bg-slate-700/80 transition-colors">
+                  Open <span>→</span>
                 </div>
               </Link>
 
@@ -155,8 +131,8 @@ export default function HomePage() {
                     podcasts.
                   </p>
                 </div>
-                <div className="mt-3 flex items-center justify-between rounded-xl bg-slate-800/80 px-3 py-2 text-[11px] text-slate-100 hover:bg-slate-700/80 transition-colors">
-                  Open TTS <span>→</span>
+                <div className="mt-3 flex items-center justify-between rounded-xl bg-slate-800/80 px-2.5 py-1.5 text-[10px] text-slate-100 hover:bg-slate-700/80 transition-colors">
+                  Open <span>→</span>
                 </div>
               </Link>
 
@@ -177,8 +153,8 @@ export default function HomePage() {
                     seconds.
                   </p>
                 </div>
-                <div className="mt-3 flex items-center justify-between rounded-xl bg-slate-800/80 px-3 py-2 text-[11px] text-slate-100 hover:bg-slate-700/80 transition-colors">
-                  Open STT <span>→</span>
+                <div className="mt-3 flex items-center justify-between rounded-xl bg-slate-800/80 px-2.5 py-1.5 text-[10px] text-slate-100 hover:bg-slate-700/80 transition-colors">
+                  Open <span>→</span>
                 </div>
               </Link>
 
@@ -198,8 +174,8 @@ export default function HomePage() {
                     Thumbnails, posters &amp; concept art matched to your brand.
                   </p>
                 </div>
-                <div className="mt-3 flex items-center justify-between rounded-xl bg-slate-950/60 px-3 py-2 text-[11px] text-amber-50 hover:bg-slate-950/90 transition-colors">
-                  Open Image Studio <span>→</span>
+                <div className="mt-3 flex items-center justify-between rounded-xl bg-slate-950/60 px-2.5 py-1.5 text-[10px] text-amber-50 hover:bg-slate-950/90 transition-colors">
+                  Open <span>→</span>
                 </div>
               </Link>
             </div>
@@ -208,10 +184,10 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* MOBILE LAYOUT (below md) */}
-      <div className="md:hidden flex min-h-screen flex-col items-center bg-[#020617] text-slate-50">
+      {/* MOBILE LAYOUT (below md) - 1080x2400px artboard, 9:19.5 aspect ratio */}
+      <div className="md:hidden flex min-h-screen max-w-full w-full flex-col items-center bg-[#020617] text-slate-50 overflow-x-hidden">
         {/* MAIN CONTENT */}
-        <div className="w-full max-w-sm flex-1 px-4 pt-4 pb-2 flex flex-col gap-3">
+        <div className="container-canvas max-w-mobile-canvas w-full pt-4 pb-2 flex flex-col gap-3">
           {/* Top brand row */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -226,18 +202,15 @@ export default function HomePage() {
 
             <Link
               href="/"
-              className="rounded-full px-3 py-1 text-[11px] font-medium bg-sky-500/90 hover:bg-sky-400 active:scale-[0.97] shadow-sm"
+              className="rounded-full px-2.5 py-1 text-[10px] font-medium bg-sky-500/90 hover:bg-sky-400 active:scale-[0.97] shadow-sm"
             >
-              Open Studio
+              Open
             </Link>
           </div>
 
           {/* Welcome card */}
           <div className="rounded-3xl bg-gradient-to-br from-[#020b2b] via-[#020617] to-[#0b1120] border border-slate-800/70 px-4 py-3 shadow-[0_0_35px_rgba(15,23,42,0.7)]">
             <p className="text-xs text-slate-400">Welcome, boss 👑</p>
-            <p className="mt-1 text-[11px] text-slate-400">
-              Sab main features ek hi screen pe. Tool tap karo, seedha open hoga — scroll kam, kaam zyada.
-            </p>
           </div>
 
           {/* Feature grid – smaller premium-style buttons */}
@@ -329,7 +302,7 @@ export default function HomePage() {
         </div>
 
         {/* FOOTER – single, tiny, no scroll */}
-        <footer className="w-full max-w-sm px-4 pb-3 pt-1 border-t border-slate-800 text-[10px] text-slate-500">
+        <footer className="container-canvas max-w-mobile-canvas w-full pb-3 pt-1 border-t border-slate-800 text-[10px] text-slate-500">
           <div className="flex items-center justify-between">
             <span>© {new Date().getFullYear()} JJJ AI Studio</span>
             <div className="flex gap-2">
