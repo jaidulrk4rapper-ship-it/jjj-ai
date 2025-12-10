@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Home, MessageCircle, Sparkles, Crown } from "lucide-react";
+import { Home, MessageCircle, Waves, Image as ImageIcon, Crown } from "lucide-react";
 import { useJjjUser } from "@/providers/UserProvider";
 
 export default function MobileNav() {
@@ -27,15 +27,21 @@ export default function MobileNav() {
     },
     {
       id: "ai-chat",
-      label: "AI",
+      label: "Chat",
       href: "/ai/chat",
       icon: MessageCircle,
     },
     {
-      id: "studio",
-      label: "Studio",
-      href: "/studio",
-      icon: Sparkles,
+      id: "text-to-speech",
+      label: "TTS",
+      href: "/ai/text-to-speech",
+      icon: Waves,
+    },
+    {
+      id: "text-to-image",
+      label: "Image",
+      href: "/ai/text-to-image",
+      icon: ImageIcon,
     },
     {
       id: "upgrade",
@@ -53,7 +59,7 @@ export default function MobileNav() {
   };
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-40 flex md:hidden items-center justify-around bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-slate-800/80 px-2 py-2 safe-area-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 flex md:hidden items-center justify-around bg-[#0A0A0A]/98 backdrop-blur-xl border-t border-slate-800/80 px-1 py-2 safe-area-bottom shadow-[0_-4px_20px_rgba(0,0,0,0.5)]">
       {navItems.map((item) => {
         const Icon = item.icon;
         const active = isActive(item.href);
@@ -62,14 +68,14 @@ export default function MobileNav() {
           <Link
             key={item.id}
             href={item.href}
-            className={`flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors min-w-0 flex-1 ${
+            className={`flex flex-col items-center justify-center gap-0.5 px-2 py-1.5 rounded-lg transition-all min-w-0 flex-1 ${
               active
-                ? "text-sky-400 bg-sky-500/10"
-                : "text-gray-400 hover:text-gray-300"
+                ? "text-sky-400 bg-sky-500/15 scale-105"
+                : "text-gray-400 hover:text-gray-300 active:scale-95"
             }`}
           >
-            <Icon className={`h-5 w-5 ${active ? "text-sky-400" : ""}`} />
-            <span className="text-[10px] font-medium truncate w-full text-center">
+            <Icon className={`h-5 w-5 flex-shrink-0 ${active ? "text-sky-400" : ""}`} />
+            <span className="text-[9px] sm:text-[10px] font-medium truncate w-full text-center leading-tight">
               {item.label}
             </span>
           </Link>
