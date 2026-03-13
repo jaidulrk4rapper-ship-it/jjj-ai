@@ -96,9 +96,9 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <StructuredData />
-        <KeyboardShortcuts />
         <ErrorBoundary>
           <ToastProvider>
+            <KeyboardShortcuts />
             <UserProvider>
               <SettingsProvider>
                 <ConditionalLayout>{children}</ConditionalLayout>

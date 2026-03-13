@@ -16,10 +16,12 @@ export default function ConditionalLayout({
   const pathname = usePathname();
   const { settings } = useSettings();
   const isAdminRoute = pathname?.startsWith("/admin");
+  const isTerminalRoute = pathname?.startsWith("/terminal");
+  const isMarketFocusRoute = pathname?.startsWith("/market-focus");
   const isChatRoute = pathname?.startsWith("/ai/chat");
   const isAiRoute = pathname?.startsWith("/ai");
 
-  if (isAdminRoute) {
+  if (isAdminRoute || isTerminalRoute || isMarketFocusRoute) {
     return <>{children}</>;
   }
 

@@ -9,6 +9,8 @@ import {
   Mic,
   Image as ImageIcon,
   Home,
+  BarChart3,
+  Eye,
   Crown,
   X,
   Menu,
@@ -16,7 +18,7 @@ import {
 } from 'lucide-react';
 import { useSettings } from '@/contexts/SettingsContext';
 import { useJjjUser } from '@/providers/UserProvider';
-import { getProStatus } from '@/lib/users';
+import { getProStatus } from '@/lib/proStatus';
 
 interface UsageData {
   plan: 'free' | 'pro';
@@ -33,7 +35,7 @@ export default function Sidebar() {
   const { settings, setSettings } = useSettings();
   const isCollapsed = settings.sidebarCollapsed;
   const { user, loading: userLoading, daysLeft } = useJjjUser();
-  const { isActive, daysLeft: proDaysLeft, isExpiringSoon } = getProStatus(user || null);
+  const { isActive: isProActive, daysLeft: proDaysLeft, isExpiringSoon } = getProStatus(user || null);
 
   const toggleSidebar = () => {
     setSettings((prev) => ({
@@ -81,6 +83,8 @@ export default function Sidebar() {
     { id: 'text-to-speech', label: 'Text to Speech', href: '/ai/text-to-speech', icon: Waves, showUsage: true, usageKey: 'tts' as const },
     { id: 'speech-to-text', label: 'Speech to Text', href: '/ai/speech-to-text', icon: Mic, showUsage: false },
     { id: 'text-to-image', label: 'Text to Image', href: '/ai/text-to-image', icon: ImageIcon, showUsage: true, usageKey: 'image' as const },
+    { id: 'terminal', label: 'Erek-X Terminal', href: '/terminal', icon: BarChart3, showUsage: false },
+    { id: 'market-focus', label: 'Market Focus', href: '/market-focus', icon: Eye, showUsage: false },
   ];
 
   const isActive = (href: string) => pathname === href;
@@ -187,7 +191,7 @@ export default function Sidebar() {
           {/* Upgrade to Pro CTA / Pro Active Status */}
           {!userLoading && !isCollapsed && (
             <>
-              {!isActive && (
+              {!isProActive && (
                 <div className="mt-4 rounded-2xl border border-sky-600/50 bg-sky-900/20 px-3 py-3 shadow-sm">
                   <p className="text-xs font-semibold text-sky-300 flex items-center gap-1">
                     <span>👑</span> Upgrade to Pro
@@ -204,7 +208,7 @@ export default function Sidebar() {
                 </div>
               )}
 
-              {isActive && !isExpiringSoon && (
+              {isProActive && !isExpiringSoon && (
                 <div className="mt-4 rounded-2xl border border-emerald-500/50 bg-emerald-900/20 px-3 py-3 shadow-sm">
                   <p className="text-xs font-semibold text-emerald-300 flex items-center gap-1">
                     <span>✅</span> Pro plan active
@@ -215,7 +219,7 @@ export default function Sidebar() {
                 </div>
               )}
 
-              {isActive && isExpiringSoon && (
+              {isProActive && isExpiringSoon && (
                 <div className="mt-4 rounded-2xl border border-amber-500/60 bg-amber-900/20 px-3 py-3 shadow-sm">
                   <p className="text-xs font-semibold text-amber-300 flex items-center gap-1">
                     <span>⏳</span> Pro ending soon
