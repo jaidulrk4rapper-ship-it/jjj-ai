@@ -13,17 +13,12 @@ import {
   Shield,
   Brain,
   CheckCircle2,
-  XCircle,
-  Clock,
-  ArrowUpDown,
   Sparkles,
-  Eye,
   X,
   BarChart3,
   Crosshair,
   Activity,
   Zap,
-  MessageCircle,
   ChevronLeft,
   ListChecks,
 } from "lucide-react";
@@ -132,40 +127,63 @@ function formatTime(dateStr: string) {
 function MockChart({ symbol, price, change }: { symbol: string; price: number; change: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pointsRef = useRef<number[]>([]);
+  const wicksRef = useRef<number[]>([]);
   const animRef = useRef<number>(0);
+  const priceRef = useRef(price);
+  const changeRef = useRef(change);
 
+  // Keep refs in sync without triggering re-render of the draw loop
+  priceRef.current = price;
+  changeRef.current = change;
+
+  // Generate candlestick data once per symbol (with stable wicks)
   useEffect(() => {
-    // Generate initial candlestick-like path
     const points: number[] = [];
+    const wicks: number[] = [];
     let y = 50;
     for (let i = 0; i < 120; i++) {
       y += (Math.random() - 0.48) * 3;
       y = Math.max(10, Math.min(90, y));
       points.push(y);
+      wicks.push(1 + Math.random() * 3);
     }
     pointsRef.current = points;
+    wicksRef.current = wicks;
   }, [symbol]);
 
+  // Single animation loop — only depends on symbol, not price/change
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const dpr = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-    ctx.scale(dpr, dpr);
-
     let frame = 0;
-    const isUp = change >= 0;
+    let currentW = 0;
+    let currentH = 0;
+
+    function sizeCanvas() {
+      if (!canvas || !ctx) return;
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      if (rect.width !== currentW || rect.height !== currentH) {
+        currentW = rect.width;
+        currentH = rect.height;
+        canvas.width = currentW * dpr;
+        canvas.height = currentH * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+    }
 
     function draw() {
       if (!ctx || !canvas) return;
-      const w = rect.width;
-      const h = rect.height;
+      sizeCanvas();
+      const w = currentW;
+      const h = currentH;
+      if (w === 0 || h === 0) { animRef.current = requestAnimationFrame(draw); return; }
+
       ctx.clearRect(0, 0, w, h);
+      const isUp = changeRef.current >= 0;
 
       // Grid lines
       ctx.strokeStyle = "rgba(148,163,184,0.06)";
@@ -186,22 +204,24 @@ function MockChart({ symbol, price, change }: { symbol: string; price: number; c
       }
 
       const pts = pointsRef.current;
-      if (pts.length < 2) return;
+      const wks = wicksRef.current;
+      if (pts.length < 2) { animRef.current = requestAnimationFrame(draw); return; }
 
       // Animate last point
       const shift = Math.sin(frame * 0.03) * 1.5;
-      const animPts = [...pts];
-      animPts[animPts.length - 1] += shift;
+      const lastIdx = pts.length - 1;
 
-      // Draw candlesticks
-      const barW = w / animPts.length;
-      for (let i = 1; i < animPts.length; i++) {
+      // Draw candlesticks (use pre-computed wick sizes)
+      const barW = w / pts.length;
+      for (let i = 1; i < pts.length; i++) {
         const x = i * barW;
-        const open = (animPts[i - 1] / 100) * h;
-        const close = (animPts[i] / 100) * h;
+        const ptVal = i === lastIdx ? pts[i] + shift : pts[i];
+        const open = (pts[i - 1] / 100) * h;
+        const close = (ptVal / 100) * h;
         const up = close < open;
-        const high = Math.min(open, close) - Math.random() * 4;
-        const low = Math.max(open, close) + Math.random() * 4;
+        const wickSize = wks[i];
+        const high = Math.min(open, close) - wickSize;
+        const low = Math.max(open, close) + wickSize;
 
         // Wick
         ctx.strokeStyle = up ? "rgba(20,184,166,0.5)" : "rgba(239,68,68,0.5)";
@@ -219,7 +239,7 @@ function MockChart({ symbol, price, change }: { symbol: string; price: number; c
       }
 
       // Price line
-      const lastY = (animPts[animPts.length - 1] / 100) * h;
+      const lastY = ((pts[lastIdx] + shift) / 100) * h;
       ctx.strokeStyle = isUp ? "rgba(20,184,166,0.4)" : "rgba(239,68,68,0.4)";
       ctx.setLineDash([4, 4]);
       ctx.lineWidth = 1;
@@ -235,7 +255,7 @@ function MockChart({ symbol, price, change }: { symbol: string; price: number; c
       ctx.fillStyle = "#fff";
       ctx.font = "bold 10px monospace";
       ctx.textAlign = "center";
-      ctx.fillText(formatPrice(price, symbol), w - 36, lastY + 4);
+      ctx.fillText(formatPrice(priceRef.current, symbol), w - 36, lastY + 4);
 
       frame++;
       animRef.current = requestAnimationFrame(draw);
@@ -243,7 +263,7 @@ function MockChart({ symbol, price, change }: { symbol: string; price: number; c
 
     draw();
     return () => cancelAnimationFrame(animRef.current);
-  }, [symbol, price, change]);
+  }, [symbol]);
 
   return (
     <canvas
@@ -278,9 +298,7 @@ export default function TerminalPage() {
   const [disciplineWarnings, setDisciplineWarnings] = useState<DisciplineWarning[]>([]);
   const [memoryWarning, setMemoryWarning] = useState<MemoryWarning | null>(null);
   const [showDisciplineModal, setShowDisciplineModal] = useState(false);
-  const [pendingExecution, setPendingExecution] = useState(false);
   const [mobilePanel, setMobilePanel] = useState<"chart" | "watchlist" | "order">("chart");
-  const [showMobilePositions, setShowMobilePositions] = useState(false);
 
   const selectedAsset = assets.find((a) => a.symbol === selectedSymbol) || assets[0];
 
@@ -292,14 +310,23 @@ export default function TerminalPage() {
           const volatility = a.category === "Crypto" ? 0.001 : a.category === "Metals" ? 0.0003 : a.category === "Indices" ? 0.0002 : 0.00008;
           const delta = (Math.random() - 0.5) * a.price * volatility;
           const newPrice = Math.max(0.00001, a.price + delta);
-          const spreadHalf = a.spread / 2 / (a.symbol.includes("JPY") || a.symbol === "US30" || a.symbol === "NAS100" ? 10 : 100000);
+          // Spread divisor depends on instrument type
+          let spreadDivisor = 100000; // Forex majors (5-digit)
+          if (a.symbol.includes("JPY") || a.symbol === "GBPJPY") spreadDivisor = 1000; // 3-digit JPY pairs
+          else if (a.symbol === "US30" || a.symbol === "NAS100") spreadDivisor = 10; // Indices
+          else if (a.symbol === "XAUUSD") spreadDivisor = 100; // Gold (2-decimal)
+          else if (a.symbol === "BTCUSD" || a.symbol === "ETHUSD") spreadDivisor = 100; // Crypto (2-decimal)
+          const spreadHalf = a.spread / 2 / spreadDivisor;
+          // Track change from original base price, not accumulated
+          const basePrice = a.price - a.change; // original session open
+          const newChange = newPrice - basePrice;
           return {
             ...a,
             price: newPrice,
             bid: newPrice - spreadHalf,
             ask: newPrice + spreadHalf,
-            change: a.change + delta,
-            changePercent: ((a.change + delta) / (a.price - a.change)) * 100,
+            change: newChange,
+            changePercent: basePrice !== 0 ? (newChange / basePrice) * 100 : 0,
           };
         })
       );
@@ -310,7 +337,6 @@ export default function TerminalPage() {
   // ── Update open trades PnL ──
   useEffect(() => {
     setTrades((prev) => {
-      let totalPnl = 0;
       const updated = prev.map((t) => {
         if (t.status !== "open") return t;
         const asset = assets.find((a) => a.symbol === t.symbol);
@@ -339,7 +365,6 @@ export default function TerminalPage() {
           closedAt = new Date().toISOString();
         }
 
-        if (status === "open") totalPnl += pnl;
         return { ...t, currentPrice, pnl, status, closedAt: closedAt || t.closedAt };
       });
 
@@ -362,10 +387,22 @@ export default function TerminalPage() {
         return t;
       });
 
-      setEquity(DEMO_BALANCE + totalPnl);
       return finalTrades;
     });
   }, [assets]);
+
+  // ── Compute equity from trades (separate from setTrades to avoid anti-pattern) ──
+  useEffect(() => {
+    const realizedPnl = trades
+      .filter((t) => t.status === "closed")
+      .reduce((sum, t) => sum + t.pnl, 0);
+    const unrealizedPnl = trades
+      .filter((t) => t.status === "open")
+      .reduce((sum, t) => sum + t.pnl, 0);
+    const newBalance = DEMO_BALANCE + realizedPnl;
+    setBalance(newBalance);
+    setEquity(newBalance + unrealizedPnl);
+  }, [trades]);
 
   // ── Erek-X Intelligence ──
   const checkDiscipline = useCallback(() => {
@@ -487,7 +524,6 @@ export default function TerminalPage() {
     setTakeProfit("");
     setPendingPrice("");
     setShowDisciplineModal(false);
-    setPendingExecution(false);
     setShowChecklist(false);
   };
 
@@ -499,7 +535,6 @@ export default function TerminalPage() {
 
     if (warnings.length > 0 || memWarn) {
       setShowDisciplineModal(true);
-      setPendingExecution(true);
     } else {
       executeTrade();
     }
@@ -730,7 +765,7 @@ export default function TerminalPage() {
                   return (
                     <button
                       key={tab}
-                      onClick={() => { setBottomTab(tab); setShowMobilePositions(true); }}
+                      onClick={() => setBottomTab(tab)}
                       className={`px-3 py-2 text-[11px] font-medium capitalize transition-colors relative ${
                         bottomTab === tab ? "text-teal-400" : "text-slate-500 hover:text-slate-300"
                       }`}
@@ -867,10 +902,13 @@ export default function TerminalPage() {
             {/* Asset List */}
             <div className="flex-1 overflow-y-auto scrollbar-thin">
               {filteredAssets.map((a) => (
-                <button
+                <div
                   key={a.symbol}
+                  role="button"
+                  tabIndex={0}
                   onClick={() => { setSelectedSymbol(a.symbol); if (mobilePanel === "watchlist") setMobilePanel("chart"); }}
-                  className={`w-full flex items-center justify-between px-3 py-2 border-b border-slate-800/20 transition-all hover:bg-slate-800/30 ${
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { setSelectedSymbol(a.symbol); if (mobilePanel === "watchlist") setMobilePanel("chart"); } }}
+                  className={`w-full flex items-center justify-between px-3 py-2 border-b border-slate-800/20 transition-all hover:bg-slate-800/30 cursor-pointer ${
                     a.symbol === selectedSymbol ? "bg-teal-500/5 border-l-2 border-l-teal-400" : ""
                   }`}
                 >
@@ -892,7 +930,7 @@ export default function TerminalPage() {
                       {a.changePercent >= 0 ? "+" : ""}{a.changePercent.toFixed(2)}%
                     </div>
                   </div>
-                </button>
+                </div>
               ))}
             </div>
           </div>
@@ -1136,7 +1174,7 @@ export default function TerminalPage() {
             {/* Actions */}
             <div className="flex gap-2 px-5 py-4 border-t border-slate-800/60">
               <button
-                onClick={() => { setShowDisciplineModal(false); setPendingExecution(false); }}
+                onClick={() => setShowDisciplineModal(false)}
                 className="flex-1 py-2.5 rounded-lg border border-slate-700 text-xs font-semibold text-slate-300 hover:bg-slate-800 transition-colors"
               >
                 Cancel Trade
