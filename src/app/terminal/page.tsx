@@ -530,6 +530,16 @@ export default function TerminalPage() {
   const handlePlaceOrder = () => {
     const warnings = checkDiscipline();
     const memWarn = checkMemory(selectedSymbol);
+
+    // Add missing stop loss warning
+    if (!stopLoss) {
+      warnings.push({ type: "risk", message: "No stop loss set. Trading without a stop loss exposes you to unlimited downside.", severity: "danger" });
+    }
+    // Add checklist warning if mostly unchecked
+    if (checkedCount === 0) {
+      warnings.push({ type: "risk", message: "Pre-trade checklist is empty. Complete it to ensure trade quality.", severity: "warning" });
+    }
+
     setDisciplineWarnings(warnings);
     setMemoryWarning(memWarn);
 
@@ -1081,6 +1091,54 @@ export default function TerminalPage() {
                 <Sparkles className="h-3 w-3" />
                 Ask AI Coach
               </button>
+
+              {/* ── Pre-Trade Inline Warnings ── */}
+              {(() => {
+                const warnings: { icon: typeof AlertTriangle; msg: string; level: "danger" | "warning" | "info" }[] = [];
+                // Checklist status
+                if (checkedCount === 0) {
+                  warnings.push({ icon: ListChecks, msg: "Checklist empty — complete before trading", level: "warning" });
+                } else if (checkedCount < checklist.length) {
+                  warnings.push({ icon: ListChecks, msg: `Checklist: ${checkedCount}/${checklist.length} — ${checklist.length - checkedCount} items unchecked`, level: "info" });
+                }
+                // Missing stop loss
+                if (!stopLoss) {
+                  warnings.push({ icon: Shield, msg: "No stop loss set — high risk", level: "danger" });
+                }
+                // Revenge trading check
+                const recentClosed = trades.filter(
+                  (t) => t.status === "closed" && t.closedAt && Date.now() - new Date(t.closedAt).getTime() < 300000
+                );
+                const recentLosses = recentClosed.filter((t) => t.pnl < 0);
+                if (recentLosses.length >= 2) {
+                  warnings.push({ icon: AlertTriangle, msg: `${recentLosses.length} losses in 5 min — revenge trading risk`, level: "danger" });
+                }
+                // Overtrading
+                const openCount = trades.filter((t) => t.status === "open").length;
+                if (openCount >= 3) {
+                  warnings.push({ icon: AlertTriangle, msg: `${openCount} open trades — manage existing first`, level: "warning" });
+                }
+
+                if (warnings.length === 0) return null;
+                return (
+                  <div className="space-y-1 mb-2">
+                    {warnings.map((w, i) => {
+                      const Icon = w.icon;
+                      const colors = w.level === "danger"
+                        ? "bg-red-500/10 border-red-500/30 text-red-400"
+                        : w.level === "warning"
+                        ? "bg-amber-500/10 border-amber-500/30 text-amber-400"
+                        : "bg-slate-500/10 border-slate-500/30 text-slate-400";
+                      return (
+                        <div key={i} className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-[10px] font-medium ${colors}`}>
+                          <Icon className="h-3 w-3 flex-shrink-0" />
+                          <span>{w.msg}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })()}
 
               {/* Execute Button */}
               <button

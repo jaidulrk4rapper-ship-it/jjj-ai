@@ -10,6 +10,7 @@ import {
   Image as ImageIcon,
   Home,
   BarChart3,
+  Eye,
   Crown,
   X,
   Menu,
@@ -83,6 +84,7 @@ export default function Sidebar() {
     { id: 'speech-to-text', label: 'Speech to Text', href: '/ai/speech-to-text', icon: Mic, showUsage: false },
     { id: 'text-to-image', label: 'Text to Image', href: '/ai/text-to-image', icon: ImageIcon, showUsage: true, usageKey: 'image' as const },
     { id: 'terminal', label: 'Erek-X Terminal', href: '/terminal', icon: BarChart3, showUsage: false },
+    { id: 'market-focus', label: 'Market Focus', href: '/market-focus', icon: Eye, showUsage: false },
   ];
 
   const isActive = (href: string) => pathname === href;
