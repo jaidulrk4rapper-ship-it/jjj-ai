@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Home, MessageCircle, Waves, Image as ImageIcon, Crown } from "lucide-react";
+import { Home, MessageCircle, Waves, Image as ImageIcon, Crown, BarChart3 } from "lucide-react";
 import { useJjjUser } from "@/providers/UserProvider";
 
 export default function MobileNav() {
@@ -10,11 +10,12 @@ export default function MobileNav() {
   const { user } = useJjjUser();
   const isPro = user?.plan === "pro";
 
-  // Hide mobile nav on admin routes and login pages
+  // Hide mobile nav on admin, terminal, and login routes
   const isAdminRoute = pathname?.startsWith("/admin");
+  const isTerminalRoute = pathname?.startsWith("/terminal");
   const isLoginRoute = pathname?.startsWith("/login") || pathname?.startsWith("/signup");
-  
-  if (isAdminRoute || isLoginRoute) {
+
+  if (isAdminRoute || isTerminalRoute || isLoginRoute) {
     return null;
   }
 
@@ -42,6 +43,12 @@ export default function MobileNav() {
       label: "Image",
       href: "/ai/text-to-image",
       icon: ImageIcon,
+    },
+    {
+      id: "terminal",
+      label: "Terminal",
+      href: "/terminal",
+      icon: BarChart3,
     },
     {
       id: "upgrade",
